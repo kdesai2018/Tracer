@@ -16,15 +16,14 @@ function init() {
     // }
     // Configure App
     app = new PIXI.Application({width: appWidth, height: appHeight});
-    app.renderer.backgroundColor = 0xfff00f;
-    app.renderer.autoResize = true;
+    app.renderer.backgroundColor = 0xffffff;
+    app.renderer.autoDensity = true;
     // add created canvas to the html
     document.body.appendChild(app.view);
     // Load Images
+
     PIXI.loader
-    .add('testing', 'https://en.wikipedia.org/wiki/File:Stick_figure.png'
-    )
-    .load(setup);
+    .add('testing', "assets/temp_stick_figure.png").load(setup);
     app.ticker.add(delta => gameLoop(delta))
     requestAnimationFrame(gameLoop);
 }
@@ -34,28 +33,30 @@ function gameLoop (delta) {
 }
 
 function update() {
-    console.log("woooo");
+    console.log("woooo000o");
 }
 
 function setup() {
-    // Initialize sprites
-    player1 = new PIXI.Sprite(PIXI.loader.resources['testing'].texture);
-    player1.anchor.x = 100;
-    player1.anchor.y = 100;
-    app.stage.addChild(player1);
-
-    spacebar = keyboard(32);
-
-    spacebar.press = () => {
-      spacePressed = true
-    }
-    spacebar.release = () => {
-      spacePressed = false
-    }
-    //app.ticker.add(delta => gameLoop(delta)); //time increment
+  // Initialize sprites
     
-    console.log("START NOW");
-    //startGame()
+  player1 = new PIXI.Sprite(PIXI.loader.resources['testing'].texture);
+  console.log("after new sprite has been creater");
+  player1.position.x = 100;
+  player1.position.y = 100;
+  app.stage.addChild(player1);
+
+  spacebar = keyboard(32);
+
+  // spacebar.press = () => {
+  //   spacePressed = true
+  // }
+  // spacebar.release = () => {
+  //   spacePressed = false
+  // }
+  // app.ticker.add(delta => gameLoop(delta)); //time increment
+  
+  console.log("START NOW");
+  //startGame()
 }
 
 // Keyboard Controls
