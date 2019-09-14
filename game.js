@@ -19,12 +19,15 @@ function init() {
     document.body.appendChild(app.view);
     // Load Images
     PIXI.loader
-    .add('testing', "assets/temp_stick_figure.png").load(setup);
+    .add('testing', "assets/temp_stick_figure.png")
+    .add('code_test', "level1.txt")
+    .load(setup);
     app.ticker.add(delta => gameLoop(delta))
     state = enterState;
 }
 
 function gameLoop (delta) {
+<<<<<<< HEAD
   requestAnimationFrame(gameLoop);
   console.log("woooo");
   state(delta);
@@ -49,30 +52,52 @@ function movingState (delta) {
 
 function exitState (delta) {
 
+=======
+  // not used rn what the fuck why is this here  
+  //console.log("woooo");
+}
+
+function update() {
+  // not used right now
+>>>>>>> 8b552dec82bcad42ad45606397422822006d4e08
 }
 
 function setup() {
   // Initialize sprites
-    
   player1 = new PIXI.Sprite(PIXI.loader.resources['testing'].texture);
-  console.log("after new sprite has been creater");
+  // text = new PIXI.Sprite(PIXI.loader.resources['code_text'].texture);
+  console.log("after new sprite has been creater")
   player1.position.x = 100;
   player1.position.y = 100;
   app.stage.addChild(player1);
 
-  spacebar = keyboard(32);
+  const fileURL = 'level1.txt';
 
-  // spacebar.press = () => {
-  //   spacePressed = true
-  // }
-  // spacebar.release = () => {
-  //   spacePressed = false
-  // }
+  fetch(fileURL).then(r => r.text()).then(t => console.log(t));
+
+
+  // const fs = require('fs');
+  // fs.readFile('level1.txt', 'utf-8', (err,data) => {
+  //   if (err) throw error;
+  //   console.log(data);
+  // })
+
+
+
+  // app.stage.addChild(text);
+
   // app.ticker.add(delta => gameLoop(delta)); //time increment
   
   console.log("START NOW");
-  //startGame()
+  // startGame(); // method that stars displaying text and shit
 }
+
+// function startGame() {
+//   // var textSample = new PIXI.Sprite();
+//   textSample.position.set(20);
+//   app.stage.addChild(textSample);
+
+// }
 
 // Keyboard Controls
 function keyboard(keyCode) {
@@ -110,4 +135,8 @@ function keyboard(keyCode) {
       "keyup", key.upHandler.bind(key), false
     );
     return key;
+<<<<<<< HEAD
   }
+=======
+  }
+>>>>>>> 8b552dec82bcad42ad45606397422822006d4e08
