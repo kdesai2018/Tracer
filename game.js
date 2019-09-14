@@ -4,16 +4,13 @@ var appWidth = 512 * 2;
 var appHeight = 512 * 1.25;
 var app;
 var player1;
+var state;
 
 // Initialization Function (begin on menu screen)
 function init() {
     // Debug messages
-    console.log("init() successfully called.");
+    console.log("Beginning Initialization...");
     PIXI.utils.sayHello(type);
-    // // Render type
-    // if(!PIXI.utils.isWebGLSupported()){
-    //     type = 'canvas';
-    // }
     // Configure App
     app = new PIXI.Application({width: appWidth, height: appHeight});
     app.renderer.backgroundColor = 0xffffff;
@@ -21,19 +18,37 @@ function init() {
     // add created canvas to the html
     document.body.appendChild(app.view);
     // Load Images
-
     PIXI.loader
     .add('testing', "assets/temp_stick_figure.png").load(setup);
     app.ticker.add(delta => gameLoop(delta))
-    requestAnimationFrame(gameLoop);
+    state = enterState;
 }
 
 function gameLoop (delta) {
-    console.log("woooo");
+  requestAnimationFrame(gameLoop);
+  console.log("woooo");
+  state(delta);
 }
 
-function update() {
-    console.log("woooo000o");
+// --- State-Specific Game-Loop Functions ---
+function enterState (delta) {
+
+}
+
+function optionsPresentedState (delta) {
+
+}
+
+function dyingState (delta) {
+
+}
+
+function movingState (delta) {
+
+}
+
+function exitState (delta) {
+
 }
 
 function setup() {
@@ -96,9 +111,3 @@ function keyboard(keyCode) {
     );
     return key;
   }
-
-/*PIXI.loader
-  .add([
-  ])
-  .load(setup)
-  */
