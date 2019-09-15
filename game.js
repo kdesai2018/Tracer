@@ -106,7 +106,7 @@ function init() {
     PIXI.utils.sayHello(type);
     // Configure App
     app = new PIXI.Application({width: appWidth, height: appHeight});
-    app.renderer.backgroundColor = 0x00ffff;
+    app.renderer.backgroundColor = 0x107185;
     app.renderer.autoDensity = true;
     timeCounter = 0;
     livesCount = startingLives;
@@ -298,8 +298,8 @@ function setupPlayer(player){
 function setup() {
   // Initialize sprites
 
-  backdrop = new PIXI.Sprite(PIXI.loader.resources['backdrop'].texture);
-  app.stage.addChild(backdrop);
+  //backdrop = new PIXI.Sprite(PIXI.loader.resources['backdrop'].texture);
+  //app.stage.addChild(backdrop);
 
   player1 = PIXI.extras.AnimatedSprite.fromFrames(player1Frames);
   player2 = PIXI.extras.AnimatedSprite.fromFrames(player2Frames);
