@@ -120,9 +120,9 @@ function setup() {
   state = enterState;
 }
 
-function getText(File f) {
+// function getText(File f) {
 
-}
+// }
 
 // function startGame() {
 //   // var textSample = new PIXI.Sprite();
