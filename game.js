@@ -2,9 +2,11 @@
 var type = "WebGL";
 var appWidth = 512 * 2;
 var appHeight = 512 * 1.25;
+var playerScaleFactor = new PIXI.Point(.08, .08);
 var app;
 var player1;
 var state;
+var timeCounter;
 
 // Initialization Function (begin on menu screen)
 function init() {
@@ -14,28 +16,34 @@ function init() {
     PIXI.utils.sayHello(type);
     // Configure App
     app = new PIXI.Application({width: appWidth, height: appHeight});
-    app.renderer.backgroundColor = 0xffffff;
+    app.renderer.backgroundColor = 0xff00ff;
     app.renderer.autoDensity = true;
+    timeCounter = 0;
     // add created canvas to the html
     document.body.appendChild(app.view);
     // Load Images
     PIXI.loader
-    .add('testing', "assets/temp_stick_figure.png")
+    .add('testing', "assets/player1_1.png")
     .add('code_test', "level1.txt")
     .load(setup);
-    app.ticker.add(delta => gameLoop(delta))
-    state = enterState;
 }
 
 function gameLoop (delta) {
   requestAnimationFrame(gameLoop);
-  console.log("woooo");
+  //console.log("woooo");
+  timeCounter += delta*1.0/10000;
   state(delta);
 }
 
 // --- State-Specific Game-Loop Functions ---
 function enterState (delta) {
-
+  console.log(timeCounter);
+  // sprite to starting position
+  let complete = moveToward(delta, player1, 200, 200, true, true);
+  if (complete) {
+    console.log("switching to options state");
+    state = optionsPresentedState;
+  }
 }
 
 function optionsPresentedState (delta) {
@@ -51,7 +59,6 @@ function movingState (delta) {
 }
 
 function exitState (delta) {
-
 }
 
 function setup() {
@@ -71,7 +78,8 @@ function setup() {
   // app.ticker.add(delta => gameLoop(delta)); //time increment
   
   console.log("START NOW");
-  // startGame(); // method that stars displaying text and shit
+  app.ticker.add(delta => gameLoop(delta))
+  state = enterState;
 }
 
 // function startGame() {
