@@ -4,7 +4,7 @@ var appWidth = 512 * 2;
 var appHeight = 512 * 1.25;
 var playerScaleFactor = new PIXI.Point(.08, .043);
 var heartScaleFactor = new PIXI.Point(.35, .35);
-var indicatorScaleFactor = new PIXI.Point(.1, .1);
+var indicatorScaleFactor = new PIXI.Point(.08, .08);
 var hearts = [];
 var lineOptions = [
   [2, 4, 14, 0],
@@ -57,7 +57,7 @@ var playerXAdjustment = 5;
 var lineInterval = 51;
 var deductionBoost = 30;
 var tabXAdjustment = 7;
-var indicatorLeftAdjustment = 5;
+var indicatorLeftAdjustment = 60;
 var firstLineY;
 player1Indicators = [];
 player2Indicators = [];
@@ -156,8 +156,8 @@ function enterState (delta) {
     }
     player1.scale.x *= -1;
     player1.stop();
-    for (var i=0; i<player1Indicators.length; i++) {
-      indLoc = computeIndicatorLocation(player1Indicators[i]);
+    for (var i=0; i<3; i++) {
+      indLoc = computeIndicatorLocation(lineOptions[currLine-1][i]);
       player1Indicators[i].x = indLoc.x;
       player1Indicators[i].y = indLoc.y;
       console.log(indLoc);
@@ -216,6 +216,7 @@ function moveToward (delta, sprite, destX, destY, fromLeft, fromTop) {
 function setupPlayer(player){
   player.scale = playerScaleFactor;
   firstLineY = 55 - player.height;
+  console.log("setup done " + firstLineY);
   player.position.x = 1100;
   player.position.y = firstLineY+15;
   player.scale.x *= -1;
@@ -247,16 +248,16 @@ function setup() {
     nextIndicator.scale = indicatorScaleFactor;
     nextIndicator.x = -100;
     nextIndicator.y = -100;
-    if (i/4 == 0) {
+    if (Math.floor(i/4) == 0) {
       player1Indicators[i%4] = nextIndicator;
     }
-    if (i/4 == 1) {
+    if (Math.floor(i/4) == 1) {
       player2Indicators[i%4] = nextIndicator;
     }
-    if (i/4 == 2) {
+    if (Math.floor(i/4) == 2) {
       player3Indicators[i%4] = nextIndicator;
     }
-    if (i/4 == 3) {
+    if (Math.floor(i/4) == 3) {
       player4Indicators[i%4] = nextIndicator;
     }
     app.stage.addChild(nextIndicator);
@@ -305,8 +306,8 @@ function computeIndicatorLocation (lineNum) {
   if (lineNum == 6 || lineNum == 9) {
     x += tabXAdjustment;
   }
-  console.log("first ly " + firstLineY);
-  let y = firstLineY + lineNum * lineInterval;
+  let y = firstLineY - 35 + lineNum * lineInterval;
+  console.log("first y " + y + " " + lineNum + " " + lineInterval);
   if (lineNum >= 7) {
     y -= deductionBoost;
   }
