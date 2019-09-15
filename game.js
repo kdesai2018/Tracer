@@ -5,6 +5,7 @@ var appHeight = 512 * 1.25;
 var playerScaleFactor = new PIXI.Point(.06, .06);
 var heartScaleFactor = new PIXI.Point(.35, .35);
 var hearts = [];
+var gameCount = 0;
 var lineOptions = [
   [2, 4, 14, 0],
   [3, 5, 8, 0],
@@ -124,11 +125,13 @@ function optionsPresentedState (delta) {
 }
 
 function dyingState (delta) {
-
+  if(livesCount == 0){
+    console.log("you died");
+  }
 }
 
 function movingState (delta) {
-
+  
 }
 
 function exitState (delta) {
@@ -240,17 +243,41 @@ function setup() {
   app.ticker.add(delta => gameLoop(delta))
   let aKey = new keyboard(65);
   aKey.press = () => {
-    console.log("akey");
+    if(lineOptions[gameCount][3] == 0)
+      console.log("correct");
+    else{
+      livesCount--;
+      console.log(livesCount);
+      app.stage.removeChild(hearts[2-livesCount])
+      state = dyingState;
+    }
+    gameCount++;
   };
 
   let bKey = new keyboard(66);
   bKey.press = () => {
-    console.log("bKey");
+    if(lineOptions[gameCount][3] == 1)
+      console.log("correct");
+    else{
+      livesCount--;
+      console.log(livesCount);
+      app.stage.removeChild(hearts[2-livesCount])
+      state = dyingState;
+    }
+    gameCount++;
   };
 
   let cKey = new keyboard(67);
   cKey.press = () => {
-    console.log("cKey");
+    if(lineOptions[gameCount][3] == 2)
+      console.log("correct");
+    else{
+      livesCount--;
+      console.log(livesCount);
+      app.stage.removeChild(hearts[2-livesCount])
+      state = dyingState;
+    }
+    gameCount++;
   };
   state = enterState;
 }
