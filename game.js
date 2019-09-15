@@ -14,7 +14,7 @@ var lineOptions = [
   [4, 8, 14, 0],
   [5, 8, 14, 0],
   [6, 8, 14, 1],
-  [8, 11, 14, 0],
+  [9, 11, 14, 0],
   [4, 11, 14, 1],
   [1, 12, 14, 1],
   [4, 8, 14, 0],
@@ -22,15 +22,15 @@ var lineOptions = [
   [6, 8, 11, 1],
   [9, 11, 14, 0],
   [3, 11, 14, 1],
-  [1, 5, 11, 2],
-  [3, 8, 4, 1],
+  [1, 5, 12, 2],
+  [3, 4, 8, 1],
   [5, 8, 12, 0],
   [6, 8, 11, 0],
   [8, 9, 14, 0],
   [9, 11, 14, 1],
   [4, 5, 12, 2],
-  [1, 4, 5, 2],
-  [5, 14, 11, 1]
+  [1, 4, 5, 1],
+  [5, 11, 14, 2]
 ];
 var tabs4 = "\t\t\t\t";
 var code = ["boolean inLoop = true;",
@@ -160,7 +160,7 @@ function enterState (delta) {
     player1.scale.x *= -1;
     player1.stop();
     for (var i=0; i<3; i++) {
-      indLoc = computeIndicatorLocation(lineOptions[currLine-1][i]);
+      indLoc = computeIndicatorLocation(lineOptions[gameCount][i]);
       player1Indicators[i].x = indLoc.x;
       player1Indicators[i].y = indLoc.y;
       console.log(indLoc);
@@ -226,7 +226,7 @@ function movingState (delta) {
   } else {
     let destLoc = computePlayerLocation(currLine);
     console.log("dest loc " + destLoc + " for line " + currLine);
-    let complete2 = moveToward(delta, player1, destLoc.x, destLoc.y,false, true);
+    let complete2 = moveToward(delta, player1, destLoc.x, destLoc.y,false, prevLine < currLine);
     if (complete2) {
       player1.scale.x *= -1;
       if (player1.scale.x < 0) {
@@ -237,7 +237,7 @@ function movingState (delta) {
       } else {
         player1.stop();
         for (var i=0; i<3; i++) {
-          indLoc = computeIndicatorLocation(lineOptions[currLine-1][i]);
+          indLoc = computeIndicatorLocation(lineOptions[gameCount][i]);
           player1Indicators[i].x = indLoc.x;
           player1Indicators[i].y = indLoc.y;
           console.log(indLoc);
@@ -379,16 +379,17 @@ function setup() {
 
 function verifyAnswer (correctIndex) {
   if (state == optionsPresentedState) {
-    if(lineOptions[currLine - 1][3] == correctIndex) {
+    if(lineOptions[gameCount][3] == correctIndex) {
       console.log("correct");
       prevLine = currLine;
-      currLine = lineOptions[currLine-1][lineOptions[currLine-1][3]];
+      currLine = lineOptions[gameCount][lineOptions[gameCount][3]];
       movingPhase = 0;
       for (var i=0; i<player1Indicators.length; i++) {
         player1Indicators[i].x = -100;
         player1Indicators[i].y = -100;
       }
       player1.play();
+      gameCount++;
       state = movingState;
     } else{
       livesCount--;
