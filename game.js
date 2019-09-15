@@ -23,7 +23,6 @@ function init() {
     // Load Images
     PIXI.loader
     .add('testing', "assets/player1_1.png")
-    .add('code_test', "level1.txt")
     .load(setup);
 }
 
@@ -96,20 +95,34 @@ function setup() {
   player1.scale = playerScaleFactor;
   app.stage.addChild(player1);
 
-  const fileURL = 'level1.txt';
-
-  console.log("right before text parsing");
-  var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
-  var text = new PIXI.Text(code,{fontFamily : 'Arial', fontSize: 40, fill : 0x000000, align : 'center'});
+  // var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
+  var code = "boolean inLoop = true;\n\n"+
+  "int number = 0;\n\n"+
+  "int numberTwo = 0;\n\n"+
+  "while(inLoop) {\n\n"+
+  "if(number * numberTwo > 7) {\n\n"+
+  "inLoop = false;\n\n}"+
+  "\n\nif(number < 2) {\n\n"+
+          "inLoop = true;\n\n"+
+      "}\n"+
+      "number = number + 1;\n\n"+
+      "numberTwo = numberTwo + 2;\n"+
+  "}\n\n";
+  
+  var text = new PIXI.Text(code,{fontFamily : 'Arial', fontSize: 24, fill : 0x000000, align : 'left'});
   app.stage.addChild(text);
-  console.log("after text");
 
-  // app.ticker.add(delta => gameLoop(delta)); //time increment
+
+
   
   console.log("START NOW");
   app.ticker.add(delta => gameLoop(delta))
   state = enterState;
 }
+
+// function getText(File f) {
+
+// }
 
 // function startGame() {
 //   // var textSample = new PIXI.Sprite();
