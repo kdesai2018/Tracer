@@ -5,7 +5,7 @@ var appHeight = 512 * 1.25;
 var playerScaleFactor = new PIXI.Point(.08, .041);
 var heartScaleFactor = new PIXI.Point(.35, .35);
 var indicatorScaleFactor = new PIXI.Point(.08, .08);
-var codeStyle = new PIXI.TextStyle({fontFamily : 'Consolas', fontSize: 20, fill : 0x000000, align : 'left'});
+var codeStyle = new PIXI.TextStyle({fontFamily : 'Consolas', fontSize: 20, fill : 0xFFFFFF, align : 'left'});
 var hearts = [];
 var gameCount = 0;
 var lineOptions = [
@@ -108,7 +108,7 @@ function init() {
     PIXI.utils.sayHello(type);
     // Configure App
     app = new PIXI.Application({width: appWidth, height: appHeight});
-    app.renderer.backgroundColor = 0x107185;
+    app.renderer.backgroundColor = 0x5c5c5e;
     app.renderer.autoDensity = true;
     timeCounter = 0;
     livesCount = startingLives;
