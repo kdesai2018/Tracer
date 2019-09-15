@@ -46,7 +46,7 @@ function init() {
     PIXI.utils.sayHello(type);
     // Configure App
     app = new PIXI.Application({width: appWidth, height: appHeight});
-    app.renderer.backgroundColor = 0x00ffff;
+    app.renderer.backgroundColor = 0x213df2;
     app.renderer.autoDensity = true;
     timeCounter = 0;
     livesCount = startingLives;
@@ -166,23 +166,25 @@ function setup() {
   code.push("int number = 0;");
   code.push("int numberTwo = 0;");
   code.push("while (inLoop) {");
-  code.push("if (number * numberTwo > 7) {");
-  code.push("inLoop = false; }");
-  code.push("if (number < 2) {");
-  code.push("inLoop = true;");
-  code.push("}");
-  code.push("number = number + 1;");
-  code.push("numberTwo = numberTwo + 2;");
+  code.push("\t\t\t\tif (number * numberTwo > 7) {");
+  code.push("\t\t\t\t\t\t\t\tinLoop = false;");
+  code.push("\t\t\t\t}")
+  code.push("\t\t\t\tif (number < 2) {");
+  code.push("\t\t\t\t\t\t\t\tinLoop = true;");
+  code.push("\t\t\t\t}");
+  code.push("\t\t\t\tnumber = number + 1;");
+  code.push("\t\t\t\tnumberTwo = numberTwo + 2;");
   code.push("}");
 
-  var init_x = 0;
+  var init_x = 10;
 
   console.log("THIS IS THE CODE LENGTH: " + code.length);
+
   var code_render = [];
   for (var i = 0; i < code.length; i++) {
-    code_render.push(new PIXI.Text(code[i], {fontFamily : 'Helvetica', fontSize: 24, fill : 0x000000, align : 'left'}));
+    code_render.push(new PIXI.Text(" "+ code[i], {fontFamily : 'Helvetica', fontSize: 20, fill : 0xffffff, align : 'left'}));
     code_render[i].position.y = init_x;
-    init_x += 55;
+    init_x += 50;
     app.stage.addChild(code_render[i]);
 
   }
