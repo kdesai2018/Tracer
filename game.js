@@ -191,8 +191,11 @@ function setup() {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   // initialize sound effort 
   var zap = createAudio('audio/backstreet.mp3',{volume:0.3});
+=======
+>>>>>>> parent of 8101039... init audio
 =======
 >>>>>>> parent of 8101039... init audio
 =======
@@ -213,7 +216,10 @@ function setup() {
     console.log(hearts[i]);
   }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 8101039... init audio
 
   // var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
   var code = [];
@@ -242,6 +248,8 @@ function setup() {
   var text = new PIXI.Text(code,{fontFamily : 'Arial', fontSize: 24, fill : 0x000000, align : 'left'});
   app.stage.addChild(text);
   init_x = 0;
+
+  console.log("THIS IS THE CODE LENGTH: " + code.length);
 
   console.log("THIS IS THE CODE LENGTH: " + code.length);
 
