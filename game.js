@@ -70,7 +70,7 @@ function gameLoop (delta) {
 // --- State-Specific Game-Loop Functions ---
 function enterState (delta) {
   console.log(timeCounter);
-  let complete = moveToward(delta, player1, 200, 200, true, true);
+  let complete = moveToward(delta, player1, 600, 200, true, true);
   if (complete) {
     console.log("switching to options state");
     state = optionsPresentedState;
@@ -92,28 +92,29 @@ function movingState (delta) {
 function exitState (delta) {
 }
 
-var speed = .004;
+var xSpeed = .004;
 var deltaCoeff = .001;
 
 function moveToward (delta, sprite, destX, destY, fromLeft, fromTop) {
   let xDone = false;
   let yDone = false;
+  let ySpeed = Math.abs((destY - sprite.position.y)*1.0/(destX - sprite.position.x))*xSpeed;
   if (fromLeft) {
     if (sprite.position.x < destX) {
-      sprite.position.x += speed*(delta*deltaCoeff);
+      sprite.position.x += xSpeed*(delta*deltaCoeff);
     } else {xDone = true;}
   } else {
     if (sprite.position.x > destX) {
-      sprite.position.x -= speed*(delta*deltaCoeff);
+      sprite.position.x -= xSpeed*(delta*deltaCoeff);
     } else {xDone = true;}
   }
   if (fromTop) {
     if (sprite.position.y < destY) {
-      sprite.position.y += speed*(delta*deltaCoeff);
+      sprite.position.y += ySpeed*(delta*deltaCoeff);
     } else {yDone = true;}
   } else {
     if (sprite.position.y > destY) {
-      sprite.position.y -= speed*(delta*deltaCoeff);
+      sprite.position.y -= ySpeed*(delta*deltaCoeff);
     } else {yDone = true;}
   }
   return xDone && yDone
