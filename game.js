@@ -171,9 +171,23 @@ function optionsPresentedState (delta) {
 
 }
 
+var pauseDuration = 10000;
+var pauseTimer = 0;
 function dyingState (delta) {
+  if (pauseTimer >= 0) {
+    pauseTimer += delta*.001;
+  }
+  if (pauseTimer >= 0 && pauseTimer > pauseDuration) {
+    player1.play();
+    console.log("timeout");
+    pauseTimer = -1;
+  }
+  if (pauseTimer == -1) {
+    //annimation
+  }
   if(livesCount == 0){
     console.log("you died");
+    player1.stop();
   }
 }
 
@@ -304,8 +318,10 @@ function setup() {
     else{
       livesCount--;
       console.log(livesCount);
-      app.stage.removeChild(hearts[2-livesCount])
+      app.stage.removeChild(hearts[2-livesCount]);
+      player1.stop();
       state = dyingState;
+      
     }
     gameCount++;
   };
