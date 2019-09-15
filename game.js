@@ -98,6 +98,8 @@ const player4Frames = [
   "assets/player4_4.png",
 ];
 var timeCounter;
+var number;
+var numberTwo;
 
 // Initialization Function (begin on menu screen)
 function init() {
@@ -343,6 +345,8 @@ function setup() {
     //console.log(hearts[i]);
   }
 
+  
+
   // WRITES CODE LINES
   var lineY = 60;
   for (var i = 0; i < code.length; i++) {
@@ -383,6 +387,14 @@ function verifyAnswer (correctIndex) {
       console.log("correct");
       prevLine = currLine;
       currLine = lineOptions[currLine-1][lineOptions[currLine-1][3]];
+      if(currLine == 2)
+        number = 0;
+      else if(currLine == 3)
+        numberTwo = 0;
+      else if(currLine == 11)
+        number++;
+      else if(currLine == 12)
+        numberTwo += 2;
       movingPhase = 0;
       for (var i=0; i<player1Indicators.length; i++) {
         player1Indicators[i].x = -100;
