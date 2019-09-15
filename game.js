@@ -4,6 +4,7 @@ var appWidth = 512 * 2;
 var appHeight = 512 * 1.25;
 var playerScaleFactor = new PIXI.Point(.06, .06);
 var heartScaleFactor = new PIXI.Point(.35, .35);
+var indicatorScaleFactor = new PIXI.Point(.1, .1);
 var hearts = [];
 var lineOptions = [
   [2, 4, 14, 0],
@@ -37,6 +38,11 @@ var currLine;
 var app;
 var player1;
 var state;
+player1Indicators = [];
+player2Indicators = [];
+player3Indicators = [];
+player4Indicators = [];
+indicatorNames = ["p1a", "p1b", "p1c", "p2a", "p2b", "p2c", "p3a", "p3b", "p3c", "p4a", "p4b", "p4c"];
 const player1Frames = [ 
   "assets/player1_1.png",
   "assets/player1_2.png",
@@ -94,11 +100,21 @@ function init() {
         .add(player2Frames)
         .add(player3Frames)
         .add(player4Frames)
+        .add("p1a", "assets/player1_a.png")
+        .add("p1b", "assets/player1_b.png")
+        .add("p1c", "assets/player1_c.png")
+        .add("p2a", "assets/player2_a.png")
+        .add("p2b", "assets/player2_b.png")
+        .add("p2c", "assets/player2_c.png")
+        .add("p3a", "assets/player3_a.png")
+        .add("p3b", "assets/player3_b.png")
+        .add("p3c", "assets/player3_c.png")
+        .add("p4a", "assets/player4_a.png")
+        .add("p4b", "assets/player4_b.png")
+        .add("p4c", "assets/player4_c.png")
         .add("heart", "assets/life_symbol.png")
         .add("backdrop", "assets/backdrop.png")
         .load(setup);
-    app.ticker.add(delta => gameLoop(delta))
-    state = enterState;
 }
 
 function gameLoop (delta) {
@@ -114,6 +130,9 @@ function enterState (delta) {
   let complete = moveToward(delta, player1, 600, 200, true, true);
   if (complete) {
     console.log("switching to options state");
+    for (var i=0; i<lineOptions[currLine+1]; i++) {
+      let indicatorToLine = lineOptions[currLine+1][i];
+    }
     
     state = optionsPresentedState;
   }
@@ -189,6 +208,30 @@ function setup() {
   console.log("after new sprite has been creater")
   setupPlayer(player1);
 
+  console.log("player " + player1);
+
+  for (var i=0; i<indicatorNames.length; i++) {
+    let nextIndicator = new PIXI.Sprite(PIXI.loader.resources[indicatorNames[i]].texture);
+    nextIndicator.scale = indicatorScaleFactor;
+    nextIndicator.x = -100;
+    nextIndicator.y = -100;
+    if (i/4 == 0) {
+      player1Indicators[i%4] = nextIndicator;
+    }
+    if (i/4 == 1) {
+      player2Indicators[i%4] = nextIndicator;
+    }
+    if (i/4 == 2) {
+      player3Indicators[i%4] = nextIndicator;
+    }
+    if (i/4 == 3) {
+      player4Indicators[i%4] = nextIndicator;
+    }
+    app.stage.addChild(nextIndicator);
+  }
+
+
+
   // initialize sound effort 
   var zap = createAudio('audio/backstreet.mp3',{volume:1.0});
   
@@ -223,6 +266,7 @@ function setup() {
   
   var text = new PIXI.Text(code,{fontFamily : 'Arial', fontSize: 24, fill : 0x000000, align : 'left'});
   app.stage.addChild(text);
+  var init_x = 10;
 
   var code_render = [];
   for (var i = 0; i < code.length; i++) {
