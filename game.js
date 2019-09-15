@@ -169,18 +169,21 @@ function setup() {
 
   // var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
   var code = [];
-  code.push("boolean inLoop = true;");
-  code.push("int number = 0;");
-  code.push("int numberTwo = 0;");
-  code.push("while (inLoop) {");
-  code.push("\t\t\t\tif (number * numberTwo > 7) {");
+  code.push("boolean inLoop = true;\n");
+  code.push("int number = 0;\n");
+  code.push("int numberTwo = 0;\n");
+  code.push("while (inLoop) {\n");
+  code.push("\t\t\t\tif (number * numberTwo > 7) {\n");
   code.push("\t\t\t\t\t\t\t\tinLoop = false;");
+
   code.push("\t\t\t\t}")
-  code.push("\t\t\t\tif (number < 2) {");
+  code.push("\t\t\t\tif (number < 2) {\n");
   code.push("\t\t\t\t\t\t\t\tinLoop = true;");
-  code.push("\t\t\t\t}");
-  code.push("\t\t\t\tnumber = number + 1;");
+
+  code.push("\t\t\t\t}\n");
+  code.push("\t\t\t\tnumber = number + 1;\n");
   code.push("\t\t\t\tnumberTwo = numberTwo + 2;");
+
   code.push("}");
 
   var init_x = 10;
@@ -189,9 +192,12 @@ function setup() {
 
   var code_render = [];
   for (var i = 0; i < code.length; i++) {
-    code_render.push(new PIXI.Text(" "+ code[i], {fontFamily : 'Helvetica', fontSize: 20, fill : 0xffffff, align : 'left'}));
+    if (code[i].includes("}")) {
+      init_x -= 20;
+    };
+    code_render.push(new PIXI.Text(" "+ code[i], {fontFamily : 'Helvetica', fontSize: 20, fill : 0x000000, align : 'left'}));
     code_render[i].position.y = init_x;
-    init_x += 50;
+    init_x += 45;     // edit this to change space between lines...should be const b/c hardcoding oops
     app.stage.addChild(code_render[i]);
 
   }
