@@ -2,7 +2,11 @@
 var type = "WebGL";
 var appWidth = 512 * 2;
 var appHeight = 512 * 1.25;
-var playerScaleFactor = new PIXI.Point(.08, .08);
+var playerScaleFactor = new PIXI.Point(.06, .06);
+var heartScaleFactor = new PIXI.Point(.35, .35);
+var hearts = [];
+var startingLives = 3;
+var livesCount;
 var app;
 var player1;
 var state;
@@ -42,9 +46,10 @@ function init() {
     PIXI.utils.sayHello(type);
     // Configure App
     app = new PIXI.Application({width: appWidth, height: appHeight});
-    app.renderer.backgroundColor = 0xffffff;
+    app.renderer.backgroundColor = 0x00ffff;
     app.renderer.autoDensity = true;
     timeCounter = 0;
+    livesCount = startingLives;
     // add created canvas to the html
     document.body.appendChild(app.view);
     // Load Images
@@ -55,6 +60,7 @@ function init() {
         .add(player2Frames)
         .add(player3Frames)
         .add(player4Frames)
+        .add("heart", "assets/life_symbol.png")
         .load(setup);
     app.ticker.add(delta => gameLoop(delta))
     state = enterState;
@@ -69,8 +75,8 @@ function gameLoop (delta) {
 
 // --- State-Specific Game-Loop Functions ---
 function enterState (delta) {
-
-  let complete = moveToward(delta, player1, 200, 200, true, true);
+  //console.log(timeCounter);
+  let complete = moveToward(delta, player1, 600, 200, true, true);
   if (complete) {
     console.log("switching to options state");
     state = optionsPresentedState;
@@ -92,47 +98,67 @@ function movingState (delta) {
 function exitState (delta) {
 }
 
-var speed = .004;
+var xSpeed = .004;
 var deltaCoeff = .001;
 
 function moveToward (delta, sprite, destX, destY, fromLeft, fromTop) {
   let xDone = false;
   let yDone = false;
-  if (sprite != null) {
-    if (fromLeft) {
-      if (sprite.position.x < destX) {
-        sprite.position.x += speed*(delta*deltaCoeff);
-      } else {xDone = true;}
-    } else {
-      if (sprite.position.x > destX ) {
-        sprite.position.x -= speed*(delta*deltaCoeff);
-      } else {xDone = true;}
-    }
-    if (fromTop) {
-      if (sprite.position.y < destY) {
-        sprite.position.y += speed*(delta*deltaCoeff);
-      } else {yDone = true;}
-    } else {
-      if (sprite.position.y > destY) {
-        sprite.position.y -= speed*(delta*deltaCoeff);
-      } else {yDone = true;}
-    }
-    return xDone && yDone;
+  let ySpeed = Math.abs((destY - sprite.position.y)*1.0/(destX - sprite.position.x))*xSpeed;
+  if (fromLeft) {
+    if (sprite.position.x < destX) {
+      sprite.position.x += xSpeed*(delta*deltaCoeff);
+    } else {xDone = true;}
+  } else {
+    if (sprite.position.x > destX) {
+      sprite.position.x -= xSpeed*(delta*deltaCoeff);
+    } else {xDone = true;}
+  }
+  if (fromTop) {
+    if (sprite.position.y < destY) {
+      sprite.position.y += ySpeed*(delta*deltaCoeff);
+    } else {yDone = true;}
+  } else {
+    if (sprite.position.y > destY) {
+      sprite.position.y -= ySpeed*(delta*deltaCoeff);
+    } else {yDone = true;}
   }
 
+}
+
+function setupPlayer(player){
+  player.position.x = -100;
+  player.position.y = -100;
+  player.scale = playerScaleFactor;
+  app.stage.addChild(player);
+  player.animationSpeed = .15;
+  player.play();
 }
 
 function setup() {
   // Initialize sprites
   player1 = PIXI.extras.AnimatedSprite.fromFrames(player1Frames);
+  player2 = PIXI.extras.AnimatedSprite.fromFrames(player2Frames);
+  player3 = PIXI.extras.AnimatedSprite.fromFrames(player3Frames);
+  player4 = PIXI.extras.AnimatedSprite.fromFrames(player4Frames);
   // text = new PIXI.Sprite(PIXI.loader.resources['code_text'].texture);
   console.log("after new sprite has been creater")
-  player1.position.x = -100;
-  player1.position.y = -100;
-  player1.scale = playerScaleFactor;
-  app.stage.addChild(player1);
-  player1.animationSpeed = .15;
-  player1.play();
+  setupPlayer(player1);
+
+  console.log("made it " + player1);
+
+  let heartX = 850;
+  let heartY = 30;
+  for (var i=0; i<startingLives; i++) {
+    singleHeart = new PIXI.Sprite(PIXI.loader.resources['heart'].texture);
+    singleHeart.scale = heartScaleFactor;
+    singleHeart.x = heartX;
+    singleHeart.y = heartY;
+    heartX += 40;
+    hearts[i]=singleHeart;
+    app.stage.addChild(hearts[i]);
+    console.log(hearts[i]);
+  }
 
   // var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
   var code = [];
@@ -158,8 +184,7 @@ function setup() {
     code_render[i].position.y = init_x;
     init_x += 55;
     app.stage.addChild(code_render[i]);
-    // var temp = new PIXI.Text("", {fontFamily : 'Helvetica', fontSize: 24, fill : 0x000000, align : 'left'});
-    // app.stage.addChild(temp);
+
   }
   
   console.log("START NOW");
