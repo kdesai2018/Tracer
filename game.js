@@ -96,7 +96,7 @@ function setup() {
   app.stage.addChild(player1);
 
   // var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
-  var code = "boolean inLoop = true;\n\n"+
+  var code = "\n\nboolean inLoop = true;\n\n"+
   "int number = 0;\n\n"+
   "int numberTwo = 0;\n\n"+
   "while(inLoop) {\n\n"+
@@ -120,9 +120,9 @@ function setup() {
   state = enterState;
 }
 
-// function getText(File f) {
+function getText(File f) {
 
-// }
+}
 
 // function startGame() {
 //   // var textSample = new PIXI.Sprite();
