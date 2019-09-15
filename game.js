@@ -5,9 +5,35 @@ var appHeight = 512 * 1.25;
 var playerScaleFactor = new PIXI.Point(.06, .06);
 var heartScaleFactor = new PIXI.Point(.35, .35);
 var hearts = [];
+var lineOptions = [
+  [2, 4, 14, 0],
+  [3, 5, 8, 0],
+  [4, 8, 14, 0],
+  [5, 8, 14, 0],
+  [6, 8, 14, 1],
+  [9, 11, 14, 0],
+  [4, 11, 14, 1],
+  [1, 12, 14, 1],
+  [4, 8, 14, 0],
+  [5, 8, 14, 0],
+  [6, 8, 11, 1],
+  [9, 11, 14, 0],
+  [3, 11, 14, 1],
+  [1, 5, 12, 2],
+  [3, 8, 4, 1],
+  [5, 8, 12, 0],
+  [6, 8, 11, 0],
+  [8, 9, 14, 0],
+  [9, 11, 14, 1],
+  [4, 5, 12, 2],
+  [1, 4, 5, 2],
+  [5, 14, 11, 1]
+];
+var optionIndicatorTracker = [];
 var backdrop;
 var startingLives = 3;
 var livesCount;
+var currLine;
 var app;
 var player1;
 var state;
@@ -47,12 +73,19 @@ function init() {
     PIXI.utils.sayHello(type);
     // Configure App
     app = new PIXI.Application({width: appWidth, height: appHeight});
-    app.renderer.backgroundColor = 0x213df2;
+    app.renderer.backgroundColor = 0x00ffff;
     app.renderer.autoDensity = true;
     timeCounter = 0;
     livesCount = startingLives;
+    currLine = 1;
     // add created canvas to the html
     document.body.appendChild(app.view);
+
+    for (var i=0; i<optionIndicatorTracker.length; i++) {
+      for (var j=0; j<2; j++) {
+        optionIndicatorTracker[i][j] = false;
+      }
+    }
     // Load Images
     
     PIXI.loader
@@ -70,7 +103,7 @@ function init() {
 
 function gameLoop (delta) {
   requestAnimationFrame(gameLoop);
-
+  //console.log("woooo");
   timeCounter += delta*1.0/10000;
   state(delta);
 }
@@ -81,6 +114,7 @@ function enterState (delta) {
   let complete = moveToward(delta, player1, 600, 200, true, true);
   if (complete) {
     console.log("switching to options state");
+    
     state = optionsPresentedState;
   }
 }
@@ -98,6 +132,10 @@ function movingState (delta) {
 }
 
 function exitState (delta) {
+}
+
+function presentOptions() {
+
 }
 
 var xSpeed = .004;
@@ -125,7 +163,7 @@ function moveToward (delta, sprite, destX, destY, fromLeft, fromTop) {
       sprite.position.y -= ySpeed*(delta*deltaCoeff);
     } else {yDone = true;}
   }
-
+  return xDone && yDone
 }
 
 function setupPlayer(player){
@@ -151,6 +189,8 @@ function setup() {
   console.log("after new sprite has been creater")
   setupPlayer(player1);
 
+  // initialize sound effort 
+  var zap = createAudio('audio/backstreet.mp3',{volume:1.0});
   
 
 
@@ -166,40 +206,33 @@ function setup() {
     app.stage.addChild(hearts[i]);
     console.log(hearts[i]);
   }
-
+  zap.play();
   // var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
-  var code = [];
-  code.push("boolean inLoop = true;\n");
-  code.push("int number = 0;\n");
-  code.push("int numberTwo = 0;\n");
-  code.push("while (inLoop) {\n");
-  code.push("\t\t\t\tif (number * numberTwo > 7) {\n");
-  code.push("\t\t\t\t\t\t\t\tinLoop = false;");
-
-  code.push("\t\t\t\t}")
-  code.push("\t\t\t\tif (number < 2) {\n");
-  code.push("\t\t\t\t\t\t\t\tinLoop = true;");
-
-  code.push("\t\t\t\t}\n");
-  code.push("\t\t\t\tnumber = number + 1;\n");
-  code.push("\t\t\t\tnumberTwo = numberTwo + 2;");
-
-  code.push("}");
-
-  var init_x = 10;
-
-  console.log("THIS IS THE CODE LENGTH: " + code.length);
+  var code = "\n\nboolean inLoop = true;\n\n"+
+  "int number = 0;\n\n"+
+  "int numberTwo = 0;\n\n"+
+  "while(inLoop) {\n\n"+
+  "if(number * numberTwo > 7) {\n\n"+
+  "inLoop = false;\n\n}"+
+  "\n\nif(number < 2) {\n\n"+
+          "inLoop = true;\n\n"+
+      "}\n"+
+      "number = number + 1;\n\n"+
+      "numberTwo = numberTwo + 2;\n"+
+  "}\n\n";
+  
+  var text = new PIXI.Text(code,{fontFamily : 'Arial', fontSize: 24, fill : 0x000000, align : 'left'});
+  app.stage.addChild(text);
 
   var code_render = [];
   for (var i = 0; i < code.length; i++) {
     if (code[i].includes("}")) {
       init_x -= 20;
-    };
+    }
     code_render.push(new PIXI.Text(" "+ code[i], {fontFamily : 'Helvetica', fontSize: 20, fill : 0x000000, align : 'left'}));
     code_render[i].position.y = init_x;
     init_x += 45;     // edit this to change space between lines...should be const b/c hardcoding oops
     app.stage.addChild(code_render[i]);
-
   }
   
   console.log("START NOW");
@@ -219,6 +252,14 @@ function setup() {
     console.log("cKey");
   };
   state = enterState;
+}
+
+function createAudio(src, options) {
+  var audio = document.createElement('audio');
+  audio.volume = options.volume || 0.5;
+  audio.loop   = options.loop;
+  audio.src    = src;
+  return audio;
 }
 
 // function getText(File f) {
@@ -247,8 +288,8 @@ function keyboard(keyCode) {
         if (key.isUp && key.press) key.press();
           key.isDown = true;
           key.isUp = false;
-        }
-        event.preventDefault();
+      }
+      event.preventDefault();
     };
     // Up
     key.upHandler = event => {
@@ -257,8 +298,8 @@ function keyboard(keyCode) {
         if (key.isDown && key.release) key.release();
           key.isDown = false;
           key.isUp = true;
-        }
-        event.preventDefault();
+      }
+      event.preventDefault();
     };
     //Attach event listeners
     window.addEventListener(
