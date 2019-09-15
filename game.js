@@ -5,8 +5,8 @@ var appHeight = 512 * 1.25;
 var playerScaleFactor = new PIXI.Point(.08, .041);
 var heartScaleFactor = new PIXI.Point(.35, .35);
 var indicatorScaleFactor = new PIXI.Point(.08, .08);
-var codeStyle = new PIXI.TextStyle({fontFamily : 'Consolas', fontSize: 20, fill : 0x000000, align : 'left'});
-var specialStyle = new PIXI.TextStyle({font : 'Consolas', fill : 0x000000, align : 'left'});
+var codeStyle = new PIXI.TextStyle({fontFamily : 'Consolas', fontSize: 20, fill : 0xFFFFFF, align : 'left'});
+var specialStyle = new PIXI.TextStyle({font : 'Consolas', fill : 0x00000000, align : 'left'});
 var hearts = [];
 var gameCount = 0;
 var lineOptions = [
@@ -115,7 +115,7 @@ function init() {
     PIXI.utils.sayHello(type);
     // Configure App
     app = new PIXI.Application({width: appWidth, height: appHeight});
-    app.renderer.backgroundColor = 0x107185;
+    app.renderer.backgroundColor = 0x5c5c5e;
     app.renderer.autoDensity = true;
     timeCounter = 0;
     livesCount = startingLives;
@@ -410,13 +410,13 @@ function setup() {
   whiteboard.position.y = 100;
   number = 0;
   numberTwo = 0;
-  varsTitle = new PIXI.Text("--- Variables ---", codeStyle);
+  varsTitle = new PIXI.Text("--- Variables ---", specialStyle);
   varsTitle.position.x = 780;
   varsTitle.position.y = 115;
-  numberText = new PIXI.Text("number: " + number, codeStyle);
+  numberText = new PIXI.Text("number: " + number, specialStyle);
   numberText.position.x = 825;
   numberText.position.y = 150;
-  numberTwoText = new PIXI.Text("numberTwo: " + numberTwo, codeStyle);
+  numberTwoText = new PIXI.Text("numberTwo: " + numberTwo, specialStyle);
   numberTwoText.position.x = 815;
   numberTwoText.position.y = 175;
   app.stage.addChild(whiteboard);
@@ -444,8 +444,20 @@ function setup() {
   state = enterState;
 }
 
+<<<<<<< HEAD
 function generateStyle (color) {
   return new PIXI.TextStyle({fontFamily : 'Consolas', fontSize: 20, fill : color, align : 'left'});
+=======
+function intro() {
+  startGameContainer = new PIXI.Container();
+  let title = new PIXI.Text('press spacebar to begin')
+  spacebar = keyboard(32);
+
+  spacebar.press = () => {
+    app.stage.removeChild(startGameContainer)
+    state = play
+  }
+>>>>>>> 13393b508dfa7f01e1975cbf117c35c295d8403a
 }
 
 function verifyAnswer (correctIndex) {
