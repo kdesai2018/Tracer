@@ -57,6 +57,7 @@ var playerXAdjustment = 5;
 var lineInterval = 51;
 var deductionBoost = 30;
 var tabXAdjustment = 7;
+var indicatorLeftAdjustment = 5;
 var firstLineY;
 player1Indicators = [];
 player2Indicators = [];
@@ -155,6 +156,12 @@ function enterState (delta) {
     }
     player1.scale.x *= -1;
     player1.stop();
+    for (var i=0; i<player1Indicators.length; i++) {
+      indLoc = computeIndicatorLocation(player1Indicators[i]);
+      player1Indicators[i].x = indLoc.x;
+      player1Indicators[i].y = indLoc.y;
+      console.log(indLoc);
+    }
     state = optionsPresentedState;
   }
 }
@@ -291,10 +298,28 @@ function setup() {
 }
 
 function computeIndicatorLocation (lineNum) {
+  let x = marginX - indicatorLeftAdjustment;
+  if (lineNum >= 5 && lineNum <= 12) {
+    x += tabXAdjustment;
+  }
+  if (lineNum == 6 || lineNum == 9) {
+    x += tabXAdjustment;
+  }
+  console.log("first ly " + firstLineY);
+  let y = firstLineY + lineNum * lineInterval;
+  if (lineNum >= 7) {
+    y -= deductionBoost;
+  }
+  if (lineNum >= 10) {
+    y -= deductionBoost;
+  }
+  if (lineNum >= 13) {
+    y -= deductionBoost;
+  }
+  return new PIXI.Point(x, y);
 }
 
-//7, 10,13
-function computerPlayerLocation (lineNum) {
+function computePlayerLocation (lineNum) {
   let x = marginX + playerXAdjustment;
   if (lineNum >= 5 && lineNum <= 12) {
     x += tabXAdjustment;
@@ -312,7 +337,7 @@ function computerPlayerLocation (lineNum) {
   if (lineNum >= 13) {
     y -= deductionBoost;
   }
-
+  return new PIXI.Point(x, y);
 }
 
 function createAudio(src, options) {
