@@ -2,9 +2,11 @@
 var type = "WebGL";
 var appWidth = 512 * 2;
 var appHeight = 512 * 1.25;
+var playerScaleFactor = new PIXI.Point(.08, .08);
 var app;
 var player1;
 var state;
+var timeCounter;
 
 // Initialization Function (begin on menu screen)
 function init() {
@@ -13,29 +15,34 @@ function init() {
     PIXI.utils.sayHello(type);
     // Configure App
     app = new PIXI.Application({width: appWidth, height: appHeight});
-    app.renderer.backgroundColor = 0xffffff;
+    app.renderer.backgroundColor = 0xff00ff;
     app.renderer.autoDensity = true;
+    timeCounter = 0;
     // add created canvas to the html
     document.body.appendChild(app.view);
     // Load Images
     PIXI.loader
-    .add('testing', "assets/temp_stick_figure.png")
+    .add('testing', "assets/player1_1.png")
     .add('code_test', "level1.txt")
     .load(setup);
-    app.ticker.add(delta => gameLoop(delta))
-    state = enterState;
 }
 
 function gameLoop (delta) {
-<<<<<<< HEAD
   requestAnimationFrame(gameLoop);
-  console.log("woooo");
+  //console.log("woooo");
+  timeCounter += delta*1.0/10000;
   state(delta);
 }
 
 // --- State-Specific Game-Loop Functions ---
 function enterState (delta) {
-
+  console.log(timeCounter);
+  // sprite to starting position
+  let complete = moveToward(delta, player1, 200, 200, true, true);
+  if (complete) {
+    console.log("switching to options state");
+    state = optionsPresentedState;
+  }
 }
 
 function optionsPresentedState (delta) {
@@ -51,15 +58,32 @@ function movingState (delta) {
 }
 
 function exitState (delta) {
-
-=======
-  // not used rn what the fuck why is this here  
-  //console.log("woooo");
 }
 
-function update() {
-  // not used right now
->>>>>>> 8b552dec82bcad42ad45606397422822006d4e08
+var speed = .004;
+var deltaCoeff = .001;
+function moveToward (delta, sprite, destX, destY, fromLeft, fromTop) {
+  let xDone = false;
+  let yDone = false;
+  if (fromLeft) {
+    if (sprite.position.x < destX) {
+      sprite.position.x += speed*(delta*deltaCoeff);
+    } else {xDone = true;}
+  } else {
+    if (sprite.position.x > destX) {
+      sprite.position.x -= speed*(delta*deltaCoeff);
+    } else {xDone = true;}
+  }
+  if (fromTop) {
+    if (sprite.position.y < destY) {
+      sprite.position.y += speed*(delta*deltaCoeff);
+    } else {yDone = true;}
+  } else {
+    if (sprite.position.y > destY) {
+      sprite.position.y -= speed*(delta*deltaCoeff);
+    } else {yDone = true;}
+  }
+  return xDone && yDone;
 }
 
 function setup() {
@@ -67,8 +91,9 @@ function setup() {
   player1 = new PIXI.Sprite(PIXI.loader.resources['testing'].texture);
   // text = new PIXI.Sprite(PIXI.loader.resources['code_text'].texture);
   console.log("after new sprite has been creater")
-  player1.position.x = 100;
-  player1.position.y = 100;
+  player1.position.x = -100;
+  player1.position.y = -100;
+  player1.scale = playerScaleFactor;
   app.stage.addChild(player1);
 
   const fileURL = 'level1.txt';
@@ -89,7 +114,8 @@ function setup() {
   // app.ticker.add(delta => gameLoop(delta)); //time increment
   
   console.log("START NOW");
-  // startGame(); // method that stars displaying text and shit
+  app.ticker.add(delta => gameLoop(delta))
+  state = enterState;
 }
 
 // function startGame() {
@@ -135,8 +161,4 @@ function keyboard(keyCode) {
       "keyup", key.upHandler.bind(key), false
     );
     return key;
-<<<<<<< HEAD
-  }
-=======
-  }
->>>>>>> 8b552dec82bcad42ad45606397422822006d4e08
+}
