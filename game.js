@@ -2,6 +2,7 @@
 var type = "WebGL";
 var appWidth = 512 * 2;
 var appHeight = 512 * 1.25;
+var playerScaleFactor = new PIXI.Point(.08, .08);
 var app;
 var player1;
 var state;
@@ -32,6 +33,7 @@ const player4Frames = [
   "assets/player4_3.png",
   "assets/player4_4.png",
 ];
+var timeCounter;
 
 // Initialization Function (begin on menu screen)
 function init() {
@@ -42,6 +44,7 @@ function init() {
     app = new PIXI.Application({width: appWidth, height: appHeight});
     app.renderer.backgroundColor = 0xffffff;
     app.renderer.autoDensity = true;
+    timeCounter = 0;
     // add created canvas to the html
     document.body.appendChild(app.view);
     // Load Images
@@ -59,12 +62,19 @@ function init() {
 
 function gameLoop (delta) {
   requestAnimationFrame(gameLoop);
+  //console.log("woooo");
+  timeCounter += delta*1.0/10000;
   state(delta);
 }
 
 // --- State-Specific Game-Loop Functions ---
 function enterState (delta) {
-
+  console.log(timeCounter);
+  let complete = moveToward(delta, player1, 200, 200, true, true);
+  if (complete) {
+    console.log("switching to options state");
+    state = optionsPresentedState;
+  }
 }
 
 function optionsPresentedState (delta) {
@@ -80,8 +90,33 @@ function movingState (delta) {
 }
 
 function exitState (delta) {
+}
 
+var speed = .004;
+var deltaCoeff = .001;
 
+function moveToward (delta, sprite, destX, destY, fromLeft, fromTop) {
+  let xDone = false;
+  let yDone = false;
+  if (fromLeft) {
+    if (sprite.position.x < destX) {
+      sprite.position.x += speed*(delta*deltaCoeff);
+    } else {xDone = true;}
+  } else {
+    if (sprite.position.x > destX) {
+      sprite.position.x -= speed*(delta*deltaCoeff);
+    } else {xDone = true;}
+  }
+  if (fromTop) {
+    if (sprite.position.y < destY) {
+      sprite.position.y += speed*(delta*deltaCoeff);
+    } else {yDone = true;}
+  } else {
+    if (sprite.position.y > destY) {
+      sprite.position.y -= speed*(delta*deltaCoeff);
+    } else {yDone = true;}
+  }
+  return xDone && yDone
 }
 
 function setup() {
@@ -89,34 +124,41 @@ function setup() {
   player1 = PIXI.extras.AnimatedSprite.fromFrames(player1Frames);
   // text = new PIXI.Sprite(PIXI.loader.resources['code_text'].texture);
   console.log("after new sprite has been creater")
-  player1.scale.y = .375
-  player1.scale.x = .375
-  player1.position.x = 100;
-  player1.position.y = 100;
+  player1.position.x = -100;
+  player1.position.y = -100;
+  player1.scale = playerScaleFactor;
   app.stage.addChild(player1);
   player1.animationSpeed = .15;
   player1.play();
 
-  const fileURL = 'level1.txt';
+  // var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
+  var code = "\n\nboolean inLoop = true;\n\n"+
+  "int number = 0;\n\n"+
+  "int numberTwo = 0;\n\n"+
+  "while(inLoop) {\n\n"+
+  "if(number * numberTwo > 7) {\n\n"+
+  "inLoop = false;\n\n}"+
+  "\n\nif(number < 2) {\n\n"+
+          "inLoop = true;\n\n"+
+      "}\n"+
+      "number = number + 1;\n\n"+
+      "numberTwo = numberTwo + 2;\n"+
+  "}\n\n";
+  
+  var text = new PIXI.Text(code,{fontFamily : 'Arial', fontSize: 24, fill : 0x000000, align : 'left'});
+  app.stage.addChild(text);
 
-  fetch(fileURL).then(r => r.text()).then(t => console.log(t));
 
 
-  // const fs = require('fs');
-  // fs.readFile('level1.txt', 'utf-8', (err,data) => {
-  //   if (err) throw error;
-  //   console.log(data);
-  // })
-
-
-
-  // app.stage.addChild(text);
-
-  // app.ticker.add(delta => gameLoop(delta)); //time increment
   
   console.log("START NOW");
-  // startGame(); // method that stars displaying text and shit
+  app.ticker.add(delta => gameLoop(delta))
+  state = enterState;
 }
+
+// function getText(File f) {
+
+// }
 
 // function startGame() {
 //   // var textSample = new PIXI.Sprite();
@@ -161,4 +203,4 @@ function keyboard(keyCode) {
       "keyup", key.upHandler.bind(key), false
     );
     return key;
-  }
+}
