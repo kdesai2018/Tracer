@@ -5,6 +5,7 @@ var appHeight = 512 * 1.25;
 var playerScaleFactor = new PIXI.Point(.06, .06);
 var heartScaleFactor = new PIXI.Point(.35, .35);
 var hearts = [];
+var backdrop;
 var startingLives = 3;
 var livesCount;
 var app;
@@ -61,6 +62,7 @@ function init() {
         .add(player3Frames)
         .add(player4Frames)
         .add("heart", "assets/life_symbol.png")
+        .add("backdrop", "assets/backdrop.png")
         .load(setup);
     app.ticker.add(delta => gameLoop(delta))
     state = enterState;
@@ -137,6 +139,10 @@ function setupPlayer(player){
 
 function setup() {
   // Initialize sprites
+
+  backdrop = new PIXI.Sprite(PIXI.loader.resources['backdrop'].texture);
+  app.stage.addChild(backdrop);
+
   player1 = PIXI.extras.AnimatedSprite.fromFrames(player1Frames);
   player2 = PIXI.extras.AnimatedSprite.fromFrames(player2Frames);
   player3 = PIXI.extras.AnimatedSprite.fromFrames(player3Frames);
@@ -145,7 +151,8 @@ function setup() {
   console.log("after new sprite has been creater")
   setupPlayer(player1);
 
-  console.log("made it " + player1);
+  
+
 
   let heartX = 850;
   let heartY = 30;
