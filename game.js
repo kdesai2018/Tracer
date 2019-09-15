@@ -2,9 +2,10 @@
 var type = "WebGL";
 var appWidth = 512 * 2;
 var appHeight = 512 * 1.25;
-var playerScaleFactor = new PIXI.Point(.08, .043);
+var playerScaleFactor = new PIXI.Point(.08, .041);
 var heartScaleFactor = new PIXI.Point(.35, .35);
 var indicatorScaleFactor = new PIXI.Point(.08, .08);
+var codeStyle = new PIXI.TextStyle({fontFamily : 'Consolas', fontSize: 20, fill : 0x000000, align : 'left'});
 var hearts = [];
 var gameCount = 0;
 var lineOptions = [
@@ -50,21 +51,25 @@ var backdrop;
 var startingLives = 3;
 var livesCount;
 var currLine;
+var prevLine;
 var app;
 var player1;
 var state;
 var marginX = 25;
-var playerXAdjustment = 5;
+var playerXAdjustment = -5;
 var lineInterval = 51;
 var deductionBoost = 30;
 var tabXAdjustment = 7;
 var indicatorLeftAdjustment = 60;
 var firstLineY;
+var finalLineNum;
 player1Indicators = [];
 player2Indicators = [];
 player3Indicators = [];
 player4Indicators = [];
 indicatorNames = ["p1a", "p1b", "p1c", "p2a", "p2b", "p2c", "p3a", "p3b", "p3c", "p4a", "p4b", "p4c"];
+var code_render = [];
+var text_metrics = [];
 const player1Frames = [ 
   "assets/player1_1.png",
   "assets/player1_2.png",
@@ -177,15 +182,40 @@ function dyingState (delta) {
   }
 }
 
+var movingPhase = 0;
 function movingState (delta) {
-  
+  if (movingPhase == 0) {
+    console.log("!! " + text_metrics[prevLine -1].width);
+    let complete = moveToward(delta, player1, marginX + text_metrics[prevLine -1].width + 15, computePlayerLocation(prevLine).y-10,true, false);
+    if (complete) {
+      player1.scale.x *= -1;
+      movingPhase = 1;
+    }
+  } else {
+    let destLoc = computePlayerLocation(currLine);
+    let complete2 = moveToward(delta, player1, destLoc.x, destLoc.y,false, true);
+    if (complete2) {
+      player1.scale.x *= -1;
+      if (player1.scale.x < 0) {
+        player1.scale.x *= -1;
+      }
+      if (currLine == finalLineNum) {
+        state = exitState;
+      } else {
+        player1.stop();
+        for (var i=0; i<3; i++) {
+          indLoc = computeIndicatorLocation(lineOptions[currLine-1][i]);
+          player1Indicators[i].x = indLoc.x;
+          player1Indicators[i].y = indLoc.y;
+          console.log(indLoc);
+        }
+        state = optionsPresentedState;
+      }
+    }
+  }
 }
 
 function exitState (delta) {
-}
-
-function presentOptions() {
-
 }
 
 var xSpeed = .004;
@@ -219,7 +249,7 @@ function moveToward (delta, sprite, destX, destY, fromLeft, fromTop) {
 function setupPlayer(player){
   player.scale = playerScaleFactor;
   firstLineY = 55 - player.height;
-  console.log("setup done " + firstLineY);
+  //console.log("setup done " + firstLineY);
   player.position.x = 1100;
   player.position.y = firstLineY+15;
   player.scale.x *= -1;
@@ -239,12 +269,10 @@ function setup() {
   player3 = PIXI.extras.AnimatedSprite.fromFrames(player3Frames);
   player4 = PIXI.extras.AnimatedSprite.fromFrames(player4Frames);
   // text = new PIXI.Sprite(PIXI.loader.resources['code_text'].texture);
-  console.log("after new sprite has been creater")
+  //console.log("after new sprite has been creater")
   setupPlayer(player1);
 
-  
-
-  console.log("player " + player1);
+  //console.log("player " + player1);
 
   for (var i=0; i<indicatorNames.length; i++) {
     let nextIndicator = new PIXI.Sprite(PIXI.loader.resources[indicatorNames[i]].texture);
@@ -279,15 +307,16 @@ function setup() {
     heartX += 40;
     hearts[i]=singleHeart;
     app.stage.addChild(hearts[i]);
-    console.log(hearts[i]);
+    //console.log(hearts[i]);
   }
 
-  var code_render = [];
+  // WRITES CODE LINES
   var lineY = 60;
   for (var i = 0; i < code.length; i++) {
-    code_render.push(new PIXI.Text(" "+ code[i], {fontFamily : 'Consolas', fontSize: 20, fill : 0x000000, align : 'left'}));
+    code_render.push(new PIXI.Text(" "+ code[i], codeStyle));
     code_render[i].y = lineY;
     code_render[i].x = marginX;
+    text_metrics.push(new PIXI.TextMetrics.measureText(" "+ code[i], codeStyle));
     if (i+1<code.length && code[i+1].includes("}")) {
       lineY += lineInterval - deductionBoost;
     } else {
@@ -296,47 +325,47 @@ function setup() {
     app.stage.addChild(code_render[i]);
   }
   
-  console.log("START NOW");
+  //console.log("START NOW");
   app.ticker.add(delta => gameLoop(delta))
   let aKey = new keyboard(65);
   aKey.press = () => {
-    if(lineOptions[gameCount][3] == 0)
-      console.log("correct");
-    else{
-      livesCount--;
-      console.log(livesCount);
-      app.stage.removeChild(hearts[2-livesCount])
-      state = dyingState;
-    }
-    gameCount++;
+    verifyAnswer(0);
   };
 
   let bKey = new keyboard(66);
   bKey.press = () => {
-    if(lineOptions[gameCount][3] == 1)
-      console.log("correct");
-    else{
-      livesCount--;
-      console.log(livesCount);
-      app.stage.removeChild(hearts[2-livesCount])
-      state = dyingState;
-    }
-    gameCount++;
+    verifyAnswer(1);
   };
 
   let cKey = new keyboard(67);
   cKey.press = () => {
-    if(lineOptions[gameCount][3] == 2)
-      console.log("correct");
-    else{
-      livesCount--;
-      console.log(livesCount);
-      app.stage.removeChild(hearts[2-livesCount])
-      state = dyingState;
-    }
-    gameCount++;
+    verifyAnswer(2);
   };
   state = enterState;
+}
+
+function verifyAnswer (correctIndex) {
+  if (state == optionsPresentedState) {
+    if(lineOptions[currLine - 1][3] == correctIndex) {
+      console.log("correct");
+      prevLine = currLine;
+      currLine = lineOptions[currLine-1][0];
+      movingPhase = 0;
+      for (var i=0; i<player1Indicators.length; i++) {
+        player1Indicators[i].x = -100;
+        player1Indicators[i].y = -100;
+      }
+      player1.play();
+      state = movingState;
+    } else{
+      livesCount--;
+      console.log("lives: " + livesCount);
+      app.stage.removeChild(hearts[2-livesCount])
+      player1Indicators[correctIndex].x = -100;
+      player1Indicators[correctIndex].y = -100;
+      state = dyingState;
+    }
+  }
 }
 
 function computeIndicatorLocation (lineNum) {
@@ -348,7 +377,7 @@ function computeIndicatorLocation (lineNum) {
     x += tabXAdjustment;
   }
   let y = firstLineY - 35 + lineNum * lineInterval;
-  console.log("first y " + y + " " + lineNum + " " + lineInterval);
+  //console.log("first y " + y + " " + lineNum + " " + lineInterval);
   if (lineNum >= 7) {
     y -= deductionBoost;
   }
@@ -369,7 +398,7 @@ function computePlayerLocation (lineNum) {
   if (lineNum == 6 || lineNum == 9) {
     x += tabXAdjustment;
   }
-  let y = firstLineY + lineNum * lineInterval;
+  let y = firstLineY - 30 + lineNum * lineInterval;
   if (lineNum >= 7) {
     y -= deductionBoost;
   }
