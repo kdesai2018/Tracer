@@ -54,6 +54,9 @@ var player1;
 var state;
 var marginX = 25;
 var playerXAdjustment = 5;
+var lineInterval = 51;
+var deductionBoost = 30;
+var tabXAdjustment = 7;
 var firstLineY;
 player1Indicators = [];
 player2Indicators = [];
@@ -254,7 +257,7 @@ function setup() {
 
   // initialize sound effort 
   var zap = createAudio('audio/backstreet.mp3',{volume:0.3});
-  
+
   let heartX = 850;
   let heartY = 30;
   for (var i=0; i<startingLives; i++) {
@@ -270,8 +273,6 @@ function setup() {
 
   var code_render = [];
   var lineY = 60;
-  var lineInterval = 51;
-  var deductionBoost = 30;
   for (var i = 0; i < code.length; i++) {
     code_render.push(new PIXI.Text(" "+ code[i], {fontFamily : 'Consolas', fontSize: 20, fill : 0x000000, align : 'left'}));
     code_render[i].y = lineY;
@@ -287,6 +288,31 @@ function setup() {
   console.log("START NOW");
   app.ticker.add(delta => gameLoop(delta))
   state = enterState;
+}
+
+function computeIndicatorLocation (lineNum) {
+}
+
+//7, 10,13
+function computerPlayerLocation (lineNum) {
+  let x = marginX + playerXAdjustment;
+  if (lineNum >= 5 && lineNum <= 12) {
+    x += tabXAdjustment;
+  }
+  if (lineNum == 6 || lineNum == 9) {
+    x += tabXAdjustment;
+  }
+  let y = firstLineY + lineNum * lineInterval;
+  if (lineNum >= 7) {
+    y -= deductionBoost;
+  }
+  if (lineNum >= 10) {
+    y -= deductionBoost;
+  }
+  if (lineNum >= 13) {
+    y -= deductionBoost;
+  }
+
 }
 
 function createAudio(src, options) {
