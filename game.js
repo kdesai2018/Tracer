@@ -27,7 +27,6 @@ function init() {
 }
 
 function gameLoop (delta) {
-<<<<<<< HEAD
   requestAnimationFrame(gameLoop);
   console.log("woooo");
   state(delta);
@@ -52,14 +51,6 @@ function movingState (delta) {
 
 function exitState (delta) {
 
-=======
-  // not used rn what the fuck why is this here  
-  //console.log("woooo");
-}
-
-function update() {
-  // not used right now
->>>>>>> 8b552dec82bcad42ad45606397422822006d4e08
 }
 
 function setup() {
@@ -135,8 +126,4 @@ function keyboard(keyCode) {
       "keyup", key.upHandler.bind(key), false
     );
     return key;
-<<<<<<< HEAD
   }
-=======
-  }
->>>>>>> 8b552dec82bcad42ad45606397422822006d4e08
