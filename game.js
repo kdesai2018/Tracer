@@ -6,6 +6,7 @@ var playerScaleFactor = new PIXI.Point(.08, .041);
 var heartScaleFactor = new PIXI.Point(.35, .35);
 var indicatorScaleFactor = new PIXI.Point(.08, .08);
 var codeStyle = new PIXI.TextStyle({fontFamily : 'Consolas', fontSize: 20, fill : 0x000000, align : 'left'});
+var specialStyle = new PIXI.TextStyle({font : 'Consolas', fill : 0x000000, align : 'left'});
 var hearts = [];
 var gameCount = 0;
 var lineOptions = [
@@ -62,7 +63,9 @@ var deductionBoost = 30;
 var tabXAdjustment = 35;
 var indicatorLeftAdjustment = 60;
 var firstLineY;
-var finalLineNum;
+var finalGameCount = 22;
+var whiteboard;
+var varsTitle;
 player1Indicators = [];
 player2Indicators = [];
 player3Indicators = [];
@@ -100,6 +103,8 @@ const player4Frames = [
 var timeCounter;
 var number;
 var numberTwo;
+var numberText;
+var numberTwoText;
 
 // Initialization Function (begin on menu screen)
 function init() {
@@ -143,6 +148,8 @@ function init() {
         .add("p4c", "assets/player4_c.png")
         .add("heart", "assets/life_symbol.png")
         .add("backdrop", "assets/backdrop.png")
+        .add("consolas", "assets/consolas.fnt")
+        .add("whiteboard", "assets/whiteboard.png")
         .load(setup);
 }
 
@@ -234,7 +241,7 @@ function movingState (delta) {
       if (player1.scale.x < 0) {
         player1.scale.x *= -1;
       }
-      if (currLine == finalLineNum) {
+      if (gameCount == finalGameCount) {
         state = exitState;
       } else {
         player1.stop();
@@ -361,6 +368,26 @@ function setup() {
     }
     app.stage.addChild(code_render[i]);
   }
+  whiteboard = new PIXI.Sprite(PIXI.loader.resources["whiteboard"].texture);
+  whiteboard.scale = new PIXI.Point(.225, .35);
+  whiteboard.position.x = 765;
+  whiteboard.position.y = 100;
+  number = 0;
+  numberTwo = 0;
+  varsTitle = new PIXI.Text("--- Variables ---", codeStyle);
+  varsTitle.position.x = 780;
+  varsTitle.position.y = 115;
+  numberText = new PIXI.Text("number: " + number, codeStyle);
+  numberText.position.x = 825;
+  numberText.position.y = 150;
+  numberTwoText = new PIXI.Text("numberTwo: " + numberTwo, codeStyle);
+  numberTwoText.position.x = 815;
+  numberTwoText.position.y = 175;
+  app.stage.addChild(whiteboard);
+  app.stage.addChild(varsTitle);
+  app.stage.addChild(numberText);
+  app.stage.addChild(numberTwoText);
+
   
   //console.log("START NOW");
   app.ticker.add(delta => gameLoop(delta))
@@ -395,6 +422,8 @@ function verifyAnswer (correctIndex) {
         number++;
       else if(currLine == 12)
         numberTwo += 2;
+      numberText.text = "number: " + number;
+      numberTwoText.text = "numberTwo: " + numberTwo;
       movingPhase = 0;
       for (var i=0; i<player1Indicators.length; i++) {
         player1Indicators[i].x = -100;
