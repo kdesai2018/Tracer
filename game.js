@@ -214,6 +214,10 @@ function setup() {
   backdrop = new PIXI.Sprite(PIXI.loader.resources['backdrop'].texture);
   app.stage.addChild(backdrop);
 
+  // initialize sounds here
+  var firstEntry = createAudio('audio/aggressive_entry.mp3',{volume:0.3});
+
+
   player1 = PIXI.extras.AnimatedSprite.fromFrames(player1Frames);
   player2 = PIXI.extras.AnimatedSprite.fromFrames(player2Frames);
   player3 = PIXI.extras.AnimatedSprite.fromFrames(player3Frames);
@@ -221,6 +225,8 @@ function setup() {
   // text = new PIXI.Sprite(PIXI.loader.resources['code_text'].texture);
   console.log("after new sprite has been creater")
   setupPlayer(player1);
+  firstEntry.play();
+
 
   console.log("player " + player1);
 
@@ -245,7 +251,7 @@ function setup() {
   }
 
   // initialize sound effort 
-  var zap = createAudio('audio/backstreet.mp3',{volume:0.3});
+  var backgroundSound = createAudio('audio/backstreet.mp3',{volume:0.3});
 
   let heartX = 850;
   let heartY = 30;
@@ -260,7 +266,7 @@ function setup() {
     console.log(hearts[i]);
   }
 
-  zap.play();
+  // backgroundSound.play();
 
   var marginX = 20;
   var code_render = [];
