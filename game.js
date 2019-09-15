@@ -3,13 +3,10 @@ var firstEntry = createAudio('audio/aggressive_entry.mp3',{volume:0.3});
 var type = "WebGL";
 var appWidth = 512 * 2;
 var appHeight = 512 * 1.25;
-var playerScaleFactor = new PIXI.Point(.08, .041);
+var playerScaleFactor = new PIXI.Point(.08, .043);
 var heartScaleFactor = new PIXI.Point(.35, .35);
-var indicatorScaleFactor = new PIXI.Point(.08, .08);
-var codeStyle = new PIXI.TextStyle({fontFamily : 'Consolas', fontSize: 20, fill : 0xFFFFFF, align : 'left'});
-var specialStyle = new PIXI.TextStyle({font : 'Consolas', fill : 0xFFFFFF, align : 'left'});
+var indicatorScaleFactor = new PIXI.Point(.1, .1);
 var hearts = [];
-var gameCount = 0;
 var lineOptions = [
   [2, 4, 14, 0],
   [3, 5, 8, 0],
@@ -25,14 +22,14 @@ var lineOptions = [
   [9, 11, 14, 0],
   [3, 11, 14, 1],
   [1, 5, 12, 2],
-  [3, 4, 8, 1],
+  [3, 8, 4, 1],
   [5, 8, 12, 0],
   [6, 8, 11, 0],
   [8, 9, 14, 0],
   [9, 11, 14, 1],
   [4, 5, 12, 2],
-  [1, 4, 5, 1],
-  [5, 11, 14, 2]
+  [1, 4, 5, 2],
+  [5, 14, 11, 1]
 ];
 var tabs4 = "\t\t\t\t";
 var code = ["boolean inLoop = true;",
@@ -53,27 +50,20 @@ var backdrop;
 var startingLives = 3;
 var livesCount;
 var currLine;
-var prevLine;
 var app;
 var player1;
 var state;
 var marginX = 25;
-var playerXAdjustment = -5;
+var playerXAdjustment = 5;
 var lineInterval = 51;
 var deductionBoost = 30;
-var tabXAdjustment = 35;
-var indicatorLeftAdjustment = 60;
+var tabXAdjustment = 7;
 var firstLineY;
-var finalGameCount = 22;
-var whiteboard;
-var varsTitle;
 player1Indicators = [];
 player2Indicators = [];
 player3Indicators = [];
 player4Indicators = [];
 indicatorNames = ["p1a", "p1b", "p1c", "p2a", "p2b", "p2c", "p3a", "p3b", "p3c", "p4a", "p4b", "p4c"];
-var code_render = [];
-var text_metrics = [];
 const player1Frames = [ 
   "assets/player1_1.png",
   "assets/player1_2.png",
@@ -102,10 +92,6 @@ const player4Frames = [
   "assets/player4_4.png",
 ];
 var timeCounter;
-var number;
-var numberTwo;
-var numberText;
-var numberTwoText;
 
 // Initialization Function (begin on menu screen)
 function init() {
@@ -114,7 +100,7 @@ function init() {
     PIXI.utils.sayHello(type);
     // Configure App
     app = new PIXI.Application({width: appWidth, height: appHeight});
-    app.renderer.backgroundColor = 0x5c5c5e;
+    app.renderer.backgroundColor = 0x00ffff;
     app.renderer.autoDensity = true;
     timeCounter = 0;
     livesCount = startingLives;
@@ -149,8 +135,6 @@ function init() {
         .add("p4c", "assets/player4_c.png")
         .add("heart", "assets/life_symbol.png")
         .add("backdrop", "assets/backdrop.png")
-        .add("consolas", "assets/consolas.fnt")
-        .add("whiteboard", "assets/whiteboard.png")
         .load(setup);
 }
 
@@ -169,22 +153,12 @@ function enterState (delta) {
   
   if (complete) {
     console.log("switching to options state");
-<<<<<<< HEAD
     for (var i=0; i<lineOptions[currLine+1]; i++) {
-      firstEntry.play();
       let indicatorToLine = lineOptions[currLine+1][i];
     }
     
-=======
->>>>>>> ba077952822d893fa2c8dbeabca5f6b8b0d689ab
     player1.scale.x *= -1;
     player1.stop();
-    for (var i=0; i<3; i++) {
-      indLoc = computeIndicatorLocation(lineOptions[gameCount][i]);
-      player1Indicators[i].x = indLoc.x;
-      player1Indicators[i].y = indLoc.y;
-      console.log(indLoc);
-    }
     state = optionsPresentedState;
   }
 }
@@ -193,82 +167,19 @@ function optionsPresentedState (delta) {
 
 }
 
-var pauseDuration = 10000;
-var pauseTimer = 0;
-var standing = true;
 function dyingState (delta) {
-  console.log("angle " + player1.angle);
-  if (standing) {
-    player1.angle += .01;
-    if (player1.angle >= 90) {
-      standing = false;
-    }
-  } else {
-    if(livesCount == 0){
-      console.log("you died");
-      player1.stop();
-    } else {
-      player1.angle -= .01;
-      if (player1.angle <= 0) {
-        player1.angle = 0;
-        standing = true;
-        state = optionsPresentedState;
-      }
-    }
-  }
-  // if (pauseTimer >= 0) {
-  //   pauseTimer += delta*.001;
-  // }
-  // if (pauseTimer >= 0 && pauseTimer > pauseDuration) {
-  //   player1.play();
-  //   console.log("timeout");
-  //   pauseTimer = -1;
-  // }
-  // if (pauseTimer == -1) {
-  //   //annimation
-  //   player1.angle += 1;
-  //   if (player1.angle > 90) {
-
-  //   }
-  // }
 
 }
 
-var movingPhase = 0;
 function movingState (delta) {
-  if (movingPhase == 0) {
-    console.log("!! " + text_metrics[prevLine -1].width);
-    let complete = moveToward(delta, player1, marginX + text_metrics[prevLine -1].width + 15, computePlayerLocation(prevLine).y-10,true, false);
-    if (complete) {
-      player1.scale.x *= -1;
-      movingPhase = 1;
-    }
-  } else {
-    let destLoc = computePlayerLocation(currLine);
-    console.log("dest loc " + destLoc + " for line " + currLine);
-    let complete2 = moveToward(delta, player1, destLoc.x, destLoc.y,false, prevLine < currLine);
-    if (complete2) {
-      player1.scale.x *= -1;
-      if (player1.scale.x < 0) {
-        player1.scale.x *= -1;
-      }
-      if (gameCount == finalGameCount) {
-        state = exitState;
-      } else {
-        player1.stop();
-        for (var i=0; i<3; i++) {
-          indLoc = computeIndicatorLocation(lineOptions[gameCount][i]);
-          player1Indicators[i].x = indLoc.x;
-          player1Indicators[i].y = indLoc.y;
-          console.log(indLoc);
-        }
-        state = optionsPresentedState;
-      }
-    }
-  }
+
 }
 
 function exitState (delta) {
+}
+
+function presentOptions() {
+
 }
 
 var xSpeed = .004;
@@ -302,7 +213,6 @@ function moveToward (delta, sprite, destX, destY, fromLeft, fromTop) {
 function setupPlayer(player){
   player.scale = playerScaleFactor;
   firstLineY = 55 - player.height;
-  //console.log("setup done " + firstLineY);
   player.position.x = 1100;
   player.position.y = firstLineY+15;
   player.scale.x *= -1;
@@ -314,8 +224,8 @@ function setupPlayer(player){
 function setup() {
   // Initialize sprites
 
-  //backdrop = new PIXI.Sprite(PIXI.loader.resources['backdrop'].texture);
-  //app.stage.addChild(backdrop);
+  backdrop = new PIXI.Sprite(PIXI.loader.resources['backdrop'].texture);
+  app.stage.addChild(backdrop);
 
 
 
@@ -325,28 +235,30 @@ function setup() {
   player3 = PIXI.extras.AnimatedSprite.fromFrames(player3Frames);
   player4 = PIXI.extras.AnimatedSprite.fromFrames(player4Frames);
   // text = new PIXI.Sprite(PIXI.loader.resources['code_text'].texture);
-  //console.log("after new sprite has been creater")
+  console.log("after new sprite has been creater")
   setupPlayer(player1);
   
 
 
-  //console.log("player " + player1);
+  
+
+  console.log("player " + player1);
 
   for (var i=0; i<indicatorNames.length; i++) {
     let nextIndicator = new PIXI.Sprite(PIXI.loader.resources[indicatorNames[i]].texture);
     nextIndicator.scale = indicatorScaleFactor;
     nextIndicator.x = -100;
     nextIndicator.y = -100;
-    if (Math.floor(i/4) == 0) {
+    if (i/4 == 0) {
       player1Indicators[i%4] = nextIndicator;
     }
-    if (Math.floor(i/4) == 1) {
+    if (i/4 == 1) {
       player2Indicators[i%4] = nextIndicator;
     }
-    if (Math.floor(i/4) == 2) {
+    if (i/4 == 2) {
       player3Indicators[i%4] = nextIndicator;
     }
-    if (Math.floor(i/4) == 3) {
+    if (i/4 == 3) {
       player4Indicators[i%4] = nextIndicator;
     }
     app.stage.addChild(nextIndicator);
@@ -365,18 +277,15 @@ function setup() {
     heartX += 40;
     hearts[i]=singleHeart;
     app.stage.addChild(hearts[i]);
-    //console.log(hearts[i]);
+    console.log(hearts[i]);
   }
 
-  
-
-  // WRITES CODE LINES
+  var code_render = [];
   var lineY = 60;
   for (var i = 0; i < code.length; i++) {
-    code_render.push(new PIXI.Text(" "+ code[i], codeStyle));
+    code_render.push(new PIXI.Text(" "+ code[i], {fontFamily : 'Consolas', fontSize: 20, fill : 0x000000, align : 'left'}));
     code_render[i].y = lineY;
     code_render[i].x = marginX;
-    text_metrics.push(new PIXI.TextMetrics.measureText(" "+ code[i], codeStyle));
     if (i+1<code.length && code[i+1].includes("}")) {
       lineY += lineInterval - deductionBoost;
     } else {
@@ -384,115 +293,25 @@ function setup() {
     }
     app.stage.addChild(code_render[i]);
   }
-  whiteboard = new PIXI.Sprite(PIXI.loader.resources["whiteboard"].texture);
-  whiteboard.scale = new PIXI.Point(.225, .35);
-  whiteboard.position.x = 765;
-  whiteboard.position.y = 100;
-  number = 0;
-  numberTwo = 0;
-  varsTitle = new PIXI.Text("--- Variables ---", codeStyle);
-  varsTitle.position.x = 780;
-  varsTitle.position.y = 115;
-  numberText = new PIXI.Text("number: " + number, codeStyle);
-  numberText.position.x = 825;
-  numberText.position.y = 150;
-  numberTwoText = new PIXI.Text("numberTwo: " + numberTwo, codeStyle);
-  numberTwoText.position.x = 815;
-  numberTwoText.position.y = 175;
-  app.stage.addChild(whiteboard);
-  app.stage.addChild(varsTitle);
-  app.stage.addChild(numberText);
-  app.stage.addChild(numberTwoText);
-
   
-  //console.log("START NOW");
+  console.log("START NOW");
   app.ticker.add(delta => gameLoop(delta))
-  let aKey = new keyboard(65);
-  aKey.press = () => {
-    verifyAnswer(0);
-  };
-
-  let bKey = new keyboard(66);
-  bKey.press = () => {
-    verifyAnswer(1);
-  };
-
-  let cKey = new keyboard(67);
-  cKey.press = () => {
-    verifyAnswer(2);
-  };
   state = enterState;
 }
 
-function verifyAnswer (correctIndex) {
-  if (state == optionsPresentedState) {
-    if(lineOptions[gameCount][3] == correctIndex) {
-      console.log("correct");
-      prevLine = currLine;
-      currLine = lineOptions[gameCount][lineOptions[gameCount][3]];
-      if(currLine == 2)
-        number = 0;
-      else if(currLine == 3)
-        numberTwo = 0;
-      else if(currLine == 11)
-        number++;
-      else if(currLine == 12)
-        numberTwo += 2;
-      numberText.text = "number: " + number;
-      numberTwoText.text = "numberTwo: " + numberTwo;
-      movingPhase = 0;
-      for (var i=0; i<player1Indicators.length; i++) {
-        player1Indicators[i].x = -100;
-        player1Indicators[i].y = -100;
-      }
-      player1.play();
-      gameCount++;
-      state = movingState;
-    } else{
-      livesCount--;
-      console.log("lives: " + livesCount);
-      app.stage.removeChild(hearts[2-livesCount])
-      player1Indicators[correctIndex].x = -100;
-      player1Indicators[correctIndex].y = -100;
-      standing = true;
-      player1.pivot.x = player1.width/2;
-      player1.pivot.y = player1.height/2;
-      state = dyingState;
-    }
-  }
-}
-
 function computeIndicatorLocation (lineNum) {
-  var x = marginX - indicatorLeftAdjustment;
-  if (lineNum >= 5 && lineNum <= 12) {
-    x += tabXAdjustment;
-  }
-  if (lineNum == 6 || lineNum == 9) {
-    x += tabXAdjustment;
-  }
-  var y = firstLineY - 35 + lineNum * lineInterval;
-  //console.log("first y " + y + " " + lineNum + " " + lineInterval);
-  if (lineNum >= 7) {
-    y -= deductionBoost;
-  }
-  if (lineNum >= 10) {
-    y -= deductionBoost;
-  }
-  if (lineNum >= 13) {
-    y -= deductionBoost;
-  }
-  return new PIXI.Point(x, y);
 }
 
-function computePlayerLocation (lineNum) {
-  var x = marginX + playerXAdjustment;
+//7, 10,13
+function computerPlayerLocation (lineNum) {
+  let x = marginX + playerXAdjustment;
   if (lineNum >= 5 && lineNum <= 12) {
     x += tabXAdjustment;
   }
   if (lineNum == 6 || lineNum == 9) {
     x += tabXAdjustment;
   }
-  var y = firstLineY + 25 + (lineNum - 1) * (lineInterval - 1);
+  let y = firstLineY + lineNum * lineInterval;
   if (lineNum >= 7) {
     y -= deductionBoost;
   }
@@ -502,7 +321,7 @@ function computePlayerLocation (lineNum) {
   if (lineNum >= 13) {
     y -= deductionBoost;
   }
-  return new PIXI.Point(x, y);
+
 }
 
 function createAudio(src, options) {
@@ -523,7 +342,7 @@ function keyboard(keyCode) {
     key.release = undefined;
     // Down
     key.downHandler = event => {
-        //console.log("DOWN");
+        console.log("DOWN");
       if (event.keyCode === key.code) {
         if (key.isUp && key.press) key.press();
           key.isDown = true;
@@ -533,7 +352,7 @@ function keyboard(keyCode) {
     };
     // Up
     key.upHandler = event => {
-        //console.log("UP");
+        console.log("UP");
       if (event.keyCode === key.code) {
         if (key.isDown && key.release) key.release();
           key.isDown = false;
