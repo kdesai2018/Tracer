@@ -29,7 +29,7 @@ var lineOptions = [
   [1, 4, 5, 2],
   [5, 14, 11, 1]
 ];
-var optionIndicatorTracker = [];
+var optionIndicatorTracker = [];  // 2d array initialized to false
 var backdrop;
 var startingLives = 3;
 var livesCount;
@@ -190,7 +190,7 @@ function setup() {
   setupPlayer(player1);
 
   // initialize sound effort 
-  var zap = createAudio('audio/backstreet.mp3',{volume:1.0});
+  var zap = createAudio('audio/backstreet.mp3',{volume:0.3});
   
 
 
@@ -223,6 +223,7 @@ function setup() {
   
   var text = new PIXI.Text(code,{fontFamily : 'Arial', fontSize: 24, fill : 0x000000, align : 'left'});
   app.stage.addChild(text);
+  init_x = 0;
 
   var code_render = [];
   for (var i = 0; i < code.length; i++) {
