@@ -2,7 +2,11 @@
 var type = "WebGL";
 var appWidth = 512 * 2;
 var appHeight = 512 * 1.25;
-var playerScaleFactor = new PIXI.Point(.08, .08);
+var playerScaleFactor = new PIXI.Point(.06, .06);
+var heartScaleFactor = new PIXI.Point(.35, .35);
+var hearts = [];
+var startingLives = 3;
+var livesCount;
 var app;
 var player1;
 var state;
@@ -42,9 +46,10 @@ function init() {
     PIXI.utils.sayHello(type);
     // Configure App
     app = new PIXI.Application({width: appWidth, height: appHeight});
-    app.renderer.backgroundColor = 0xffffff;
+    app.renderer.backgroundColor = 0x00ffff;
     app.renderer.autoDensity = true;
     timeCounter = 0;
+    livesCount = startingLives;
     // add created canvas to the html
     document.body.appendChild(app.view);
     // Load Images
@@ -55,6 +60,7 @@ function init() {
         .add(player2Frames)
         .add(player3Frames)
         .add(player4Frames)
+        .add("heart", "assets/life_symbol.png")
         .load(setup);
     app.ticker.add(delta => gameLoop(delta))
     state = enterState;
@@ -69,7 +75,7 @@ function gameLoop (delta) {
 
 // --- State-Specific Game-Loop Functions ---
 function enterState (delta) {
-  console.log(timeCounter);
+  //console.log(timeCounter);
   let complete = moveToward(delta, player1, 600, 200, true, true);
   if (complete) {
     console.log("switching to options state");
@@ -131,6 +137,21 @@ function setup() {
   app.stage.addChild(player1);
   player1.animationSpeed = .15;
   player1.play();
+
+  console.log("made it " + player1);
+
+  let heartX = 850;
+  let heartY = 30;
+  for (var i=0; i<startingLives; i++) {
+    singleHeart = new PIXI.Sprite(PIXI.loader.resources['heart'].texture);
+    singleHeart.scale = heartScaleFactor;
+    singleHeart.x = heartX;
+    singleHeart.y = heartY;
+    heartX += 40;
+    hearts[i]=singleHeart;
+    app.stage.addChild(hearts[i]);
+    console.log(hearts[i]);
+  }
 
   // var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
   var code = "\n\nboolean inLoop = true;\n\n"+
