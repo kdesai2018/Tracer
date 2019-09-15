@@ -5,9 +5,35 @@ var appHeight = 512 * 1.25;
 var playerScaleFactor = new PIXI.Point(.06, .06);
 var heartScaleFactor = new PIXI.Point(.35, .35);
 var hearts = [];
+var lineOptions = [
+  [2, 4, 14],
+  [3, 5, 8],
+  [4, 8, 14],
+  [5, 8, 14],
+  [8, 6, 14],
+  [9, 11, 14],
+  [11, 14, 4],
+  [12, 14, 1],
+  [4, 14, 8],
+  [5, 8, 14],
+  [8, 6, 11],
+  [9, 11, 14],
+  [11, 3, 14],
+  [12, 5, 1],
+  [4, 8, 3],
+  [5, 8, 12],
+  [6, 8, 11],
+  [8, 9, 14],
+  [11, 9, 14],
+  [12, 5, 4],
+  [4, 5, 1],
+  [14, 5, 11]
+];
+var optionIndicatorTracker = [], [];
 var backdrop;
 var startingLives = 3;
 var livesCount;
+var currLine;
 var app;
 var player1;
 var state;
@@ -47,10 +73,11 @@ function init() {
     PIXI.utils.sayHello(type);
     // Configure App
     app = new PIXI.Application({width: appWidth, height: appHeight});
-    app.renderer.backgroundColor = 0x213df2;
+    app.renderer.backgroundColor = 0x00ffff;
     app.renderer.autoDensity = true;
     timeCounter = 0;
     livesCount = startingLives;
+    currLine = 1;
     // add created canvas to the html
     document.body.appendChild(app.view);
     // Load Images
@@ -70,7 +97,7 @@ function init() {
 
 function gameLoop (delta) {
   requestAnimationFrame(gameLoop);
-
+  //console.log("woooo");
   timeCounter += delta*1.0/10000;
   state(delta);
 }
@@ -81,6 +108,7 @@ function enterState (delta) {
   let complete = moveToward(delta, player1, 600, 200, true, true);
   if (complete) {
     console.log("switching to options state");
+    optionIndicatorTracker[currLine]
     state = optionsPresentedState;
   }
 }
@@ -98,6 +126,10 @@ function movingState (delta) {
 }
 
 function exitState (delta) {
+}
+
+function presentOptions() {
+
 }
 
 var xSpeed = .004;
@@ -125,7 +157,7 @@ function moveToward (delta, sprite, destX, destY, fromLeft, fromTop) {
       sprite.position.y -= ySpeed*(delta*deltaCoeff);
     } else {yDone = true;}
   }
-
+  return xDone && yDone
 }
 
 function setupPlayer(player){
@@ -151,9 +183,6 @@ function setup() {
   console.log("after new sprite has been creater")
   setupPlayer(player1);
 
-  
-
-
   let heartX = 850;
   let heartY = 30;
   for (var i=0; i<startingLives; i++) {
@@ -168,39 +197,24 @@ function setup() {
   }
 
   // var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
-  var code = [];
-  code.push("boolean inLoop = true;\n");
-  code.push("int number = 0;\n");
-  code.push("int numberTwo = 0;\n");
-  code.push("while (inLoop) {\n");
-  code.push("\t\t\t\tif (number * numberTwo > 7) {\n");
-  code.push("\t\t\t\t\t\t\t\tinLoop = false;");
+  var code = "\n\nboolean inLoop = true;\n\n"+
+  "int number = 0;\n\n"+
+  "int numberTwo = 0;\n\n"+
+  "while(inLoop) {\n\n"+
+  "if(number * numberTwo > 7) {\n\n"+
+  "inLoop = false;\n\n}"+
+  "\n\nif(number < 2) {\n\n"+
+          "inLoop = true;\n\n"+
+      "}\n"+
+      "number = number + 1;\n\n"+
+      "numberTwo = numberTwo + 2;\n"+
+  "}\n\n";
+  
+  var text = new PIXI.Text(code,{fontFamily : 'Arial', fontSize: 24, fill : 0x000000, align : 'left'});
+  app.stage.addChild(text);
 
-  code.push("\t\t\t\t}")
-  code.push("\t\t\t\tif (number < 2) {\n");
-  code.push("\t\t\t\t\t\t\t\tinLoop = true;");
 
-  code.push("\t\t\t\t}\n");
-  code.push("\t\t\t\tnumber = number + 1;\n");
-  code.push("\t\t\t\tnumberTwo = numberTwo + 2;");
 
-  code.push("}");
-
-  var init_x = 10;
-
-  console.log("THIS IS THE CODE LENGTH: " + code.length);
-
-  var code_render = [];
-  for (var i = 0; i < code.length; i++) {
-    if (code[i].includes("}")) {
-      init_x -= 20;
-    };
-    code_render.push(new PIXI.Text(" "+ code[i], {fontFamily : 'Helvetica', fontSize: 20, fill : 0x000000, align : 'left'}));
-    code_render[i].position.y = init_x;
-    init_x += 45;     // edit this to change space between lines...should be const b/c hardcoding oops
-    app.stage.addChild(code_render[i]);
-
-  }
   
   console.log("START NOW");
   app.ticker.add(delta => gameLoop(delta))
