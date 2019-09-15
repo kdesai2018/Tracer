@@ -6,7 +6,7 @@ var playerScaleFactor = new PIXI.Point(.08, .041);
 var heartScaleFactor = new PIXI.Point(.35, .35);
 var indicatorScaleFactor = new PIXI.Point(.08, .08);
 var codeStyle = new PIXI.TextStyle({fontFamily : 'Consolas', fontSize: 20, fill : 0xFFFFFF, align : 'left'});
-var specialStyle = new PIXI.TextStyle({font : 'Consolas', fill : 0xFFFFFF, align : 'left'});
+var specialStyle = new PIXI.TextStyle({font : 'Consolas', fill : 0x00000000, align : 'left'});
 var hearts = [];
 var gameCount = 0;
 var lineOptions = [
@@ -374,13 +374,13 @@ function setup() {
   whiteboard.position.y = 100;
   number = 0;
   numberTwo = 0;
-  varsTitle = new PIXI.Text("--- Variables ---", codeStyle);
+  varsTitle = new PIXI.Text("--- Variables ---", specialStyle);
   varsTitle.position.x = 780;
   varsTitle.position.y = 115;
-  numberText = new PIXI.Text("number: " + number, codeStyle);
+  numberText = new PIXI.Text("number: " + number, specialStyle);
   numberText.position.x = 825;
   numberText.position.y = 150;
-  numberTwoText = new PIXI.Text("numberTwo: " + numberTwo, codeStyle);
+  numberTwoText = new PIXI.Text("numberTwo: " + numberTwo, specialStyle);
   numberTwoText.position.x = 815;
   numberTwoText.position.y = 175;
   app.stage.addChild(whiteboard);
