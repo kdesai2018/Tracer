@@ -14,7 +14,7 @@ var lineOptions = [
   [4, 8, 14, 0],
   [5, 8, 14, 0],
   [6, 8, 14, 1],
-  [9, 11, 14, 0],
+  [8, 11, 14, 0],
   [4, 11, 14, 1],
   [1, 12, 14, 1],
   [4, 8, 14, 0],
@@ -22,7 +22,7 @@ var lineOptions = [
   [6, 8, 11, 1],
   [9, 11, 14, 0],
   [3, 11, 14, 1],
-  [1, 5, 12, 2],
+  [1, 5, 11, 2],
   [3, 8, 4, 1],
   [5, 8, 12, 0],
   [6, 8, 11, 0],
@@ -59,7 +59,7 @@ var marginX = 25;
 var playerXAdjustment = -5;
 var lineInterval = 51;
 var deductionBoost = 30;
-var tabXAdjustment = 7;
+var tabXAdjustment = 35;
 var indicatorLeftAdjustment = 60;
 var firstLineY;
 var finalLineNum;
@@ -157,9 +157,6 @@ function enterState (delta) {
   let complete = moveToward(delta, player1, marginX + playerXAdjustment, firstLineY, false, true);
   if (complete) {
     console.log("switching to options state");
-    for (var i=0; i<lineOptions[currLine+1]; i++) {
-      let indicatorToLine = lineOptions[currLine+1][i];
-    }
     player1.scale.x *= -1;
     player1.stop();
     for (var i=0; i<3; i++) {
@@ -195,8 +192,6 @@ function dyingState (delta) {
       if (player1.angle <= 0) {
         player1.angle = 0;
         standing = true;
-        player1.anchor.x = 0;
-        player1.anchor.y = 0;
         state = optionsPresentedState;
       }
     }
@@ -230,6 +225,7 @@ function movingState (delta) {
     }
   } else {
     let destLoc = computePlayerLocation(currLine);
+    console.log("dest loc " + destLoc + " for line " + currLine);
     let complete2 = moveToward(delta, player1, destLoc.x, destLoc.y,false, true);
     if (complete2) {
       player1.scale.x *= -1;
@@ -386,7 +382,7 @@ function verifyAnswer (correctIndex) {
     if(lineOptions[currLine - 1][3] == correctIndex) {
       console.log("correct");
       prevLine = currLine;
-      currLine = lineOptions[currLine-1][0];
+      currLine = lineOptions[currLine-1][lineOptions[currLine-1][3]];
       movingPhase = 0;
       for (var i=0; i<player1Indicators.length; i++) {
         player1Indicators[i].x = -100;
@@ -401,22 +397,22 @@ function verifyAnswer (correctIndex) {
       player1Indicators[correctIndex].x = -100;
       player1Indicators[correctIndex].y = -100;
       standing = true;
-      player1.anchor.x = .5;
-      player1.anchor.y = .5;
+      player1.pivot.x = player1.width/2;
+      player1.pivot.y = player1.height/2;
       state = dyingState;
     }
   }
 }
 
 function computeIndicatorLocation (lineNum) {
-  let x = marginX - indicatorLeftAdjustment;
+  var x = marginX - indicatorLeftAdjustment;
   if (lineNum >= 5 && lineNum <= 12) {
     x += tabXAdjustment;
   }
   if (lineNum == 6 || lineNum == 9) {
     x += tabXAdjustment;
   }
-  let y = firstLineY - 35 + lineNum * lineInterval;
+  var y = firstLineY - 35 + lineNum * lineInterval;
   //console.log("first y " + y + " " + lineNum + " " + lineInterval);
   if (lineNum >= 7) {
     y -= deductionBoost;
@@ -431,14 +427,14 @@ function computeIndicatorLocation (lineNum) {
 }
 
 function computePlayerLocation (lineNum) {
-  let x = marginX + playerXAdjustment;
+  var x = marginX + playerXAdjustment;
   if (lineNum >= 5 && lineNum <= 12) {
     x += tabXAdjustment;
   }
   if (lineNum == 6 || lineNum == 9) {
     x += tabXAdjustment;
   }
-  let y = firstLineY - 30 + lineNum * lineInterval;
+  var y = firstLineY + 25 + (lineNum - 1) * (lineInterval - 1);
   if (lineNum >= 7) {
     y -= deductionBoost;
   }
