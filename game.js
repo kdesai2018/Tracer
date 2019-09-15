@@ -47,6 +47,10 @@ var code = [["boolean", "inLoop = true;"],
 [tabs4 + "number = number + 1;"],
 [tabs4 + "numberTwo = numberTwo + 2;"],
 ["}"]];
+var p1;
+var p2;
+var p3;
+var p4;
 var optionIndicatorTracker = [];  // 2d array initialized to false
 var backdrop;
 var startingLives = 3;
@@ -107,6 +111,9 @@ var number;
 var numberTwo;
 var numberText;
 var numberTwoText;
+var menuTitle;
+var bigLogo;
+var bigGray;
 
 // Initialization Function (begin on menu screen)
 function init() {
@@ -152,6 +159,12 @@ function init() {
         .add("backdrop", "assets/backdrop.png")
         .add("consolas", "assets/consolas.fnt")
         .add("whiteboard", "assets/whiteboard.png")
+        .add("logo", "assets/tracer_logo.png")
+        .add("gray", "assets/gray.png")
+        .add("p1", "assets/player1.png")
+        .add("p2", "assets/player2.png")
+        .add("p3", "assets/player3.png")
+        .add("p4", "assets/player4.png")
         .load(setup);
 }
 
@@ -160,6 +173,10 @@ function gameLoop (delta) {
   //console.log("woooo");
   timeCounter += delta*1.0/10000;
   state(delta);
+}
+
+function menu(delta) {
+  
 }
 
 // --- State-Specific Game-Loop Functions ---
@@ -187,24 +204,34 @@ function optionsPresentedState (delta) {
 var pauseDuration = 10000;
 var pauseTimer = 0;
 var standing = true;
+var jumpCount = 0;
+var jumpMax = 5;
+var up = true;
+var shiftCount = 0;
+var shiftMax = 5000;
 function dyingState (delta) {
-  console.log("angle " + player1.angle);
-  if (standing) {
-    player1.angle += .01;
-    if (player1.angle >= 90) {
-      standing = false;
+  if (jumpCount < jumpMax) {
+    if (up) {
+      player1.position.y -= .005;
+      if (++shiftCount > shiftMax) {
+        shiftCount = 0;
+        up = false;
+      }
+    } else {
+      player1.position.y += .005;
+      if (++shiftCount > shiftMax) {
+        shiftCount = 0;
+        up = true;
+        jumpCount++;
+      }
     }
   } else {
-    if(livesCount == 0){
+    if (livesCount == 0) {
       console.log("you died");
       player1.stop();
+
     } else {
-      player1.angle -= .01;
-      if (player1.angle <= 0) {
-        player1.angle = 0;
-        standing = true;
-        state = optionsPresentedState;
-      }
+      state = optionsPresentedState;
     }
   }
 }
@@ -244,6 +271,7 @@ function movingState (delta) {
 }
 
 function exitState (delta) {
+  let complete = moveToward(delta, player1, 1100, 550,true, true);
 }
 
 var xSpeed = .004;
@@ -299,6 +327,27 @@ function setup() {
   // text = new PIXI.Sprite(PIXI.loader.resources['code_text'].texture);
   //console.log("after new sprite has been creater")
   setupPlayer(player1);
+
+  let ps = new PIXI.Point(.25, .25);
+  p1 = new PIXI.Sprite(PIXI.loader.resources["p1"].texture);
+  p1.position.y = 250;
+  p1.position.x = -100;
+  p1.scale = ps;
+  p2 = new PIXI.Sprite(PIXI.loader.resources["p2"].texture);
+  p2.position.y = p1.position.y;
+  p2.position.x = 50;
+  p2.scale = ps;
+
+  p3 = new PIXI.Sprite(PIXI.loader.resources["p3"].texture);
+  p3.position.y = p1.position.y;
+  p3.position.x = 550;
+  p3.scale = ps;
+
+  p4 = new PIXI.Sprite(PIXI.loader.resources["p4"].texture);
+  p4.position.y = p1.position.y;
+  p4.position.x = 700;
+  p4.scale = ps;
+
 
   //console.log("player " + player1);
 
@@ -425,22 +474,52 @@ function setup() {
   cKey.press = () => {
     verifyAnswer(2);
   };
-  state = enterState;
+
+  menuTitle = new PIXI.Text('press spacebar to begin')
+  menuTitle.position.x = 375;
+  menuTitle.position.y = 400;
+
+  bigGray = new PIXI.Sprite(PIXI.loader.resources["gray"].texture);
+  bigGray.position.x = -100;
+  bigGray.position.y = -100;
+  bigGray.scale = new PIXI.Point(2,2);
+  spacebar = keyboard(32);
+
+  spacebar.press = () => {
+    bigLogo.position.x = -3000;
+    bigLogo.position.y = -3000;
+
+    menuTitle.position.x = -3000;
+    menuTitle.position.y = -3000;
+    bigGray.position.x = -3000;
+    bigGray.position.y = -3000;
+    p1.position.x = -3000;
+    p1.position.y = -3000;
+    p2.position.x = -3000;
+    p2.position.y = -3000;
+    p3.position.x = -3000;
+    p3.position.y = -3000;
+    p4.position.x = -3000;
+    p4.position.y = -3000;
+    state = enterState;
+  }
+  bigLogo = new PIXI.Sprite(PIXI.loader.resources["logo"].texture);
+  bigLogo.position.x = 190;
+  bigLogo.position.y = 150;
+  bigLogo.scale = new PIXI.Point(1.3, 1.3);
+  app.stage.addChild(bigGray);
+
+  app.stage.addChild(bigLogo);
+  app.stage.addChild(p1);
+  app.stage.addChild(p2);
+  app.stage.addChild(p3);
+  app.stage.addChild(p4);
+  app.stage.addChild(menuTitle);
+  state = menu;
 }
 
 function generateStyle (color) {
   return new PIXI.TextStyle({fontFamily : 'Consolas', fontSize: 20, fill : color, align : 'left'});
-}
-
-function intro() {
-  startGameContainer = new PIXI.Container();
-  let title = new PIXI.Text('press spacebar to begin')
-  spacebar = keyboard(32);
-
-  spacebar.press = () => {
-    app.stage.removeChild(startGameContainer)
-    state = play
-  }
 }
 
 function verifyAnswer (correctIndex) {
@@ -476,6 +555,8 @@ function verifyAnswer (correctIndex) {
       standing = true;
       player1.pivot.x = player1.width/2;
       player1.pivot.y = player1.height/2;
+      up = true;
+      jumpCount = 0;
       state = dyingState;
     }
   }
