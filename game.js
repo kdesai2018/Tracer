@@ -281,7 +281,7 @@ function exitState (delta) {
 }
 
 var xSpeed = .004;
-var deltaCoeff = .001;
+var deltaCoeff = .0005;
 
 function moveToward (delta, sprite, destX, destY, fromLeft, fromTop) {
   let xDone = false;
