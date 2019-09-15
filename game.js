@@ -178,22 +178,45 @@ function optionsPresentedState (delta) {
 
 var pauseDuration = 10000;
 var pauseTimer = 0;
+var standing = true;
 function dyingState (delta) {
-  if (pauseTimer >= 0) {
-    pauseTimer += delta*.001;
+  console.log("angle " + player1.angle);
+  if (standing) {
+    player1.angle += .01;
+    if (player1.angle >= 90) {
+      standing = false;
+    }
+  } else {
+    if(livesCount == 0){
+      console.log("you died");
+      player1.stop();
+    } else {
+      player1.angle -= .01;
+      if (player1.angle <= 0) {
+        player1.angle = 0;
+        standing = true;
+        player1.anchor.x = 0;
+        player1.anchor.y = 0;
+        state = optionsPresentedState;
+      }
+    }
   }
-  if (pauseTimer >= 0 && pauseTimer > pauseDuration) {
-    player1.play();
-    console.log("timeout");
-    pauseTimer = -1;
-  }
-  if (pauseTimer == -1) {
-    //annimation
-  }
-  if(livesCount == 0){
-    console.log("you died");
-    player1.stop();
-  }
+  // if (pauseTimer >= 0) {
+  //   pauseTimer += delta*.001;
+  // }
+  // if (pauseTimer >= 0 && pauseTimer > pauseDuration) {
+  //   player1.play();
+  //   console.log("timeout");
+  //   pauseTimer = -1;
+  // }
+  // if (pauseTimer == -1) {
+  //   //annimation
+  //   player1.angle += 1;
+  //   if (player1.angle > 90) {
+
+  //   }
+  // }
+
 }
 
 var movingPhase = 0;
@@ -343,21 +366,7 @@ function setup() {
   app.ticker.add(delta => gameLoop(delta))
   let aKey = new keyboard(65);
   aKey.press = () => {
-<<<<<<< HEAD
     verifyAnswer(0);
-=======
-    if(lineOptions[gameCount][3] == 0)
-      console.log("correct");
-    else{
-      livesCount--;
-      console.log(livesCount);
-      app.stage.removeChild(hearts[2-livesCount]);
-      player1.stop();
-      state = dyingState;
-      
-    }
-    gameCount++;
->>>>>>> f0c632b4afb285870d012e50626a6ba5892d675f
   };
 
   let bKey = new keyboard(66);
@@ -391,6 +400,9 @@ function verifyAnswer (correctIndex) {
       app.stage.removeChild(hearts[2-livesCount])
       player1Indicators[correctIndex].x = -100;
       player1Indicators[correctIndex].y = -100;
+      standing = true;
+      player1.anchor.x = .5;
+      player1.anchor.y = .5;
       state = dyingState;
     }
   }
