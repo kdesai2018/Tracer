@@ -34,19 +34,19 @@ var lineOptions = [
   [5, 11, 14, 2]
 ];
 var tabs4 = "\t\t\t\t";
-var code = ["boolean inLoop = true;",
-"int number = 0;",
-"int numberTwo = 0;",
-"while(inLoop) {",
-tabs4 + "if(number * numberTwo > 7) {",
-tabs4 + tabs4 + "inLoop = false;",
-tabs4 + "}",
-tabs4 + "if(number < 2) {",
-tabs4 + tabs4 + "inLoop = true;",
-tabs4 + "}",
-tabs4 + "number = number + 1;",
-tabs4 + "numberTwo = numberTwo + 2;",
-"}"];
+var code = [["boolean", "inLoop = true;"],
+["int", "number = 0;"],
+["int", "numberTwo = 0;"],
+["while", "(inLoop) {"],
+[tabs4, "if", "(number * numberTwo > 7) {"],
+[tabs4 + tabs4 + "inLoop = false;"],
+[tabs4 + "}"],
+[tabs4, "if", "(number < 2) {"],
+[tabs4 + tabs4 + "inLoop = true;"],
+[tabs4 + "}"],
+[tabs4 + "number = number + 1;"],
+[tabs4 + "numberTwo = numberTwo + 2;"],
+["}"]];
 var optionIndicatorTracker = [];  // 2d array initialized to false
 var backdrop;
 var startingLives = 3;
@@ -100,6 +100,8 @@ const player4Frames = [
   "assets/player4_3.png",
   "assets/player4_4.png",
 ];
+var colorMap = new Map([["boolean" , 0xFF0000], ["int" ,0x0000FF ] ,["while", 0x00FF00], ["if", 0xFFFF00]]);
+var spaceInterval = 3; 
 var timeCounter;
 var number;
 var numberTwo;
@@ -226,8 +228,8 @@ function dyingState (delta) {
 var movingPhase = 0;
 function movingState (delta) {
   if (movingPhase == 0) {
-    console.log("!! " + text_metrics[prevLine -1].width);
-    let complete = moveToward(delta, player1, marginX + text_metrics[prevLine -1].width + 15, computePlayerLocation(prevLine).y-10,true, false);
+    console.log("!! " + text_metrics[prevLine -1]);
+    let complete = moveToward(delta, player1, marginX + text_metrics[prevLine -1] + 15, computePlayerLocation(prevLine).y-10,true, false);
     if (complete) {
       player1.scale.x *= -1;
       movingPhase = 1;
@@ -357,17 +359,51 @@ function setup() {
   // WRITES CODE LINES
   var lineY = 60;
   for (var i = 0; i < code.length; i++) {
-    code_render.push(new PIXI.Text(" "+ code[i], codeStyle));
-    code_render[i].y = lineY;
-    code_render[i].x = marginX;
-    text_metrics.push(new PIXI.TextMetrics.measureText(" "+ code[i], codeStyle));
-    if (i+1<code.length && code[i+1].includes("}")) {
+    if (code[i].length == 1) {
+      let theLineText = new PIXI.Text(" "+ code[i][0], codeStyle);
+      theLineText.position.y = lineY;
+      theLineText.position.x = marginX;
+      text_metrics.push(new PIXI.TextMetrics.measureText(" "+ code[i][0], codeStyle).width);
+      // if (i+1<code.length && code[i+1][0].includes("}")) {
+      //   lineY += lineInterval - deductionBoost;
+      // } else {
+      //   lineY += lineInterval;
+      // }
+      app.stage.addChild(theLineText);
+    } else {
+      if (i<=3) {
+        var firstWordText = new PIXI.Text(code[i][0], generateStyle(colorMap.get(code[i][0])));
+        firstWordText.y = lineY;
+        firstWordText.x = marginX;
+        var restText = new PIXI.Text(" "+ code[i][1], codeStyle);
+        restText.y = lineY;
+        let firstMetric = new PIXI.TextMetrics.measureText(code[i][0], generateStyle(colorMap.get(code[i][0])));
+        restText.x = firstWordText.x + firstMetric.width + spaceInterval;
+        text_metrics.push(firstMetric.width + new PIXI.TextMetrics.measureText(" "+code[i][1], codeStyle));
+        app.stage.addChild(firstWordText);
+        app.stage.addChild(restText);
+      } else if (i==4 || i==7) {
+        var firstWordText1 = new PIXI.Text(tabs4+ code[i][1], generateStyle(colorMap.get(code[i][1])));
+        firstWordText1.y = lineY;
+        firstWordText1.x = marginX + 7;
+        var restText1 = new PIXI.Text(" "+ code[i][2], codeStyle);
+        restText1.y = lineY;
+        restText1.x = marginX + new PIXI.TextMetrics.measureText(tabs4+code[i][1], generateStyle(colorMap.get(code[i][1]))).width + spaceInterval;
+        let firstMetric1 = new PIXI.TextMetrics.measureText(tabs4+code[i][1], generateStyle(colorMap.get(code[i][1])));
+        text_metrics.push(firstMetric1.width + new PIXI.TextMetrics.measureText(" "+code[i][2], codeStyle));
+        app.stage.addChild(firstWordText1);
+        app.stage.addChild(restText1);
+      } else {
+        console.log("WTFWTFWTF" + i);
+      }
+    }
+    if (i+1<code.length && (code[i+1][0].includes("}") || (code[i+1].length > 1 && code[i+1][1].includes("}")))) {
       lineY += lineInterval - deductionBoost;
     } else {
       lineY += lineInterval;
     }
-    app.stage.addChild(code_render[i]);
   }
+  // VARIABLES BOARD
   whiteboard = new PIXI.Sprite(PIXI.loader.resources["whiteboard"].texture);
   whiteboard.scale = new PIXI.Point(.225, .35);
   whiteboard.position.x = 765;
@@ -406,6 +442,10 @@ function setup() {
     verifyAnswer(2);
   };
   state = enterState;
+}
+
+function generateStyle (color) {
+  return new PIXI.TextStyle({fontFamily : 'Consolas', fontSize: 20, fill : color, align : 'left'});
 }
 
 function verifyAnswer (correctIndex) {
