@@ -16,7 +16,7 @@ function init() {
     PIXI.utils.sayHello(type);
     // Configure App
     app = new PIXI.Application({width: appWidth, height: appHeight});
-    app.renderer.backgroundColor = 0xff00ff;
+    app.renderer.backgroundColor = 0xffffff;
     app.renderer.autoDensity = true;
     timeCounter = 0;
     // add created canvas to the html
@@ -70,10 +70,11 @@ function setup() {
   // player1.position.y = 100;
   // app.stage.addChild(player1);
 
-
+  console.log("right before text parsing");
   var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
   var text = new PIXI.Text(code,{fontFamily : 'Arial', fontSize: 40, fill : 0x000000, align : 'center'});
   app.stage.addChild(text);
+  console.log("after text");
 
   // app.ticker.add(delta => gameLoop(delta)); //time increment
   
