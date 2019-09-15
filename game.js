@@ -8,6 +8,7 @@ var state;
 
 // Initialization Function (begin on menu screen)
 function init() {
+  var port = 8000;
     // Debug messages
     console.log("Beginning Initialization...");
     PIXI.utils.sayHello(type);
@@ -55,27 +56,17 @@ function exitState (delta) {
 
 function setup() {
   // Initialize sprites
-  player1 = new PIXI.Sprite(PIXI.loader.resources['testing'].texture);
+  // player1 = new PIXI.Sprite(PIXI.loader.resources['testing'].texture);
   // text = new PIXI.Sprite(PIXI.loader.resources['code_text'].texture);
-  console.log("after new sprite has been creater")
-  player1.position.x = 100;
-  player1.position.y = 100;
-  app.stage.addChild(player1);
-
-  const fileURL = 'level1.txt';
-
-  fetch(fileURL).then(r => r.text()).then(t => console.log(t));
+  // console.log("after new sprite has been creater")
+  // player1.position.x = 100;
+  // player1.position.y = 100;
+  // app.stage.addChild(player1);
 
 
-  // const fs = require('fs');
-  // fs.readFile('level1.txt', 'utf-8', (err,data) => {
-  //   if (err) throw error;
-  //   console.log(data);
-  // })
-
-
-
-  // app.stage.addChild(text);
+  var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
+  var text = new PIXI.Text(code,{fontFamily : 'Arial', fontSize: 40, fill : 0x000000, align : 'center'});
+  app.stage.addChild(text);
 
   // app.ticker.add(delta => gameLoop(delta)); //time increment
   
