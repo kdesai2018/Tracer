@@ -204,6 +204,20 @@ function setup() {
   
   console.log("START NOW");
   app.ticker.add(delta => gameLoop(delta))
+  let aKey = new keyboard(65);
+  aKey.press = () => {
+    console.log("akey");
+  };
+
+  let bKey = new keyboard(66);
+  bKey.press = () => {
+    console.log("bKey");
+  };
+
+  let cKey = new keyboard(67);
+  cKey.press = () => {
+    console.log("cKey");
+  };
   state = enterState;
 }
 
@@ -228,7 +242,7 @@ function keyboard(keyCode) {
     key.release = undefined;
     // Down
     key.downHandler = event => {
-        console.log("DOWN");
+        //console.log("DOWN");
       if (event.keyCode === key.code) {
         if (key.isUp && key.press) key.press();
           key.isDown = true;
@@ -238,7 +252,7 @@ function keyboard(keyCode) {
     };
     // Up
     key.upHandler = event => {
-        console.log("UP");
+        //console.log("UP");
       if (event.keyCode === key.code) {
         if (key.isDown && key.release) key.release();
           key.isDown = false;
