@@ -115,6 +115,12 @@ var menuTitle;
 var bigLogo;
 var bigGray;
 
+// music init 
+
+var backgroundSong; // = createAudio('audio/backstreet.mp3',{volume:0.3});
+var entry; //= createAudio('audio/aggressive_entry.mp3',{volume:0.3});
+var death;
+
 // Initialization Function (begin on menu screen)
 function init() {
     // Debug messages
@@ -135,6 +141,10 @@ function init() {
         optionIndicatorTracker[i][j] = false;
       }
     }
+
+    // songs 
+    entry = createAudio('audio/aggressive_entry.mp3',{volume:0.3});
+    death = createAudio('audio/death.mp3',{volume:0.3});
     // Load Images
     
     PIXI.loader
@@ -187,6 +197,8 @@ function enterState (delta) {
     console.log("switching to options state");
     player1.scale.x *= -1;
     player1.stop();
+    entry.play();
+
     for (var i=0; i<3; i++) {
       indLoc = computeIndicatorLocation(lineOptions[gameCount][i]);
       player1Indicators[i].x = indLoc.x;
@@ -210,6 +222,7 @@ var up = true;
 var shiftCount = 0;
 var shiftMax = 5000;
 function dyingState (delta) {
+  death.play();
   if (jumpCount < jumpMax) {
     if (up) {
       player1.position.y -= .005;
@@ -371,8 +384,9 @@ function setup() {
     app.stage.addChild(nextIndicator);
   }
 
-  // initialize sound effort 
-  var zap = createAudio('audio/backstreet.mp3',{volume:0.3});
+
+
+
 
   let heartX = 850;
   let heartY = 30;
@@ -386,8 +400,7 @@ function setup() {
     app.stage.addChild(hearts[i]);
     //console.log(hearts[i]);
   }
-
-  
+  // backgroundSong.play();
 
   // WRITES CODE LINES
   var lineY = 60;
