@@ -253,8 +253,8 @@ function setup() {
   }
 
   // initialize sound effort 
-  //var zap = createAudio('audio/backstreet.mp3',{volume:0.3});
-
+  var zap = createAudio('audio/backstreet.mp3',{volume:0.3});
+  
   let heartX = 850;
   let heartY = 30;
   for (var i=0; i<startingLives; i++) {
@@ -289,16 +289,13 @@ function setup() {
   state = enterState;
 }
 
-// function getText(File f) {
-
-// }
-
-// function startGame() {
-//   // var textSample = new PIXI.Sprite();
-//   textSample.position.set(20);
-//   app.stage.addChild(textSample);
-
-// }
+function createAudio(src, options) {
+  var audio = document.createElement('audio');
+  audio.volume = options.volume || 0.5;
+  audio.loop   = options.loop;
+  audio.src    = src;
+  return audio;
+}
 
 // Keyboard Controls
 function keyboard(keyCode) {
