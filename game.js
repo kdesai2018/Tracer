@@ -70,7 +70,7 @@ function init() {
 
 function gameLoop (delta) {
   requestAnimationFrame(gameLoop);
-  //console.log("woooo");
+
   timeCounter += delta*1.0/10000;
   state(delta);
 }
@@ -125,7 +125,7 @@ function moveToward (delta, sprite, destX, destY, fromLeft, fromTop) {
       sprite.position.y -= ySpeed*(delta*deltaCoeff);
     } else {yDone = true;}
   }
-  return xDone && yDone
+
 }
 
 function setupPlayer(player){
@@ -168,24 +168,31 @@ function setup() {
   }
 
   // var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
-  var code = "\n\nboolean inLoop = true;\n\n"+
-  "int number = 0;\n\n"+
-  "int numberTwo = 0;\n\n"+
-  "while(inLoop) {\n\n"+
-  "if(number * numberTwo > 7) {\n\n"+
-  "inLoop = false;\n\n}"+
-  "\n\nif(number < 2) {\n\n"+
-          "inLoop = true;\n\n"+
-      "}\n"+
-      "number = number + 1;\n\n"+
-      "numberTwo = numberTwo + 2;\n"+
-  "}\n\n";
-  
-  var text = new PIXI.Text(code,{fontFamily : 'Arial', fontSize: 24, fill : 0x000000, align : 'left'});
-  app.stage.addChild(text);
+  var code = [];
+  code.push("boolean inLoop = true;");
+  code.push("int number = 0;");
+  code.push("int numberTwo = 0;");
+  code.push("while (inLoop) {");
+  code.push("if (number * numberTwo > 7) {");
+  code.push("inLoop = false; }");
+  code.push("if (number < 2) {");
+  code.push("inLoop = true;");
+  code.push("}");
+  code.push("number = number + 1;");
+  code.push("numberTwo = numberTwo + 2;");
+  code.push("}");
 
+  var init_x = 0;
 
+  console.log("THIS IS THE CODE LENGTH: " + code.length);
+  var code_render = [];
+  for (var i = 0; i < code.length; i++) {
+    code_render.push(new PIXI.Text(code[i], {fontFamily : 'Helvetica', fontSize: 24, fill : 0x000000, align : 'left'}));
+    code_render[i].position.y = init_x;
+    init_x += 55;
+    app.stage.addChild(code_render[i]);
 
+  }
   
   console.log("START NOW");
   app.ticker.add(delta => gameLoop(delta))
