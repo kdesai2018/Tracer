@@ -30,6 +30,20 @@ var lineOptions = [
   [1, 4, 5, 2],
   [5, 14, 11, 1]
 ];
+var tabs4 = "\t\t\t\t";
+var code = ["boolean inLoop = true;",
+"int number = 0;",
+"int numberTwo = 0;",
+"while(inLoop) {",
+tabs4 + "if(number * numberTwo > 7) {",
+tabs4 + tabs4 + "inLoop = false;",
+tabs4 + "}",
+tabs4 + "if(number < 2) {",
+tabs4 + tabs4 + "inLoop = true;",
+tabs4 + "}",
+tabs4 + "number = number + 1;",
+tabs4 + "numberTwo = numberTwo + 2;",
+"}"];
 var optionIndicatorTracker = [];  // 2d array initialized to false
 var backdrop;
 var startingLives = 3;
@@ -208,7 +222,6 @@ function setup() {
   console.log("after new sprite has been creater")
   setupPlayer(player1);
 
-<<<<<<< HEAD
   console.log("player " + player1);
 
   for (var i=0; i<indicatorNames.length; i++) {
@@ -231,23 +244,8 @@ function setup() {
     app.stage.addChild(nextIndicator);
   }
 
-
-
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> b95cbaa352246e536210f7bad21491d2b89e9ff5
   // initialize sound effort 
-  var zap = createAudio('audio/backstreet.mp3',{volume:0.3});
-=======
->>>>>>> parent of 8101039... init audio
-=======
->>>>>>> parent of 8101039... init audio
-=======
->>>>>>> parent of 8101039... init audio
-  
-
+  //var zap = createAudio('audio/backstreet.mp3',{volume:0.3});
 
   let heartX = 850;
   let heartY = 30;
@@ -261,58 +259,21 @@ function setup() {
     app.stage.addChild(hearts[i]);
     console.log(hearts[i]);
   }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> parent of 8101039... init audio
 
-  // var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
-  var code = [];
-  code.push("boolean inLoop = true;\n");
-  code.push("int number = 0;\n");
-  code.push("int numberTwo = 0;\n");
-  code.push("while (inLoop) {\n");
-  code.push("\t\t\t\tif (number * numberTwo > 7) {\n");
-  code.push("\t\t\t\t\t\t\t\tinLoop = false;");
->>>>>>> parent of 8101039... init audio
-
-  // var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
-  var code = "\n\nboolean inLoop = true;\n\n"+
-  "int number = 0;\n\n"+
-  "int numberTwo = 0;\n\n"+
-  "while(inLoop) {\n\n"+
-  "if(number * numberTwo > 7) {\n\n"+
-  "inLoop = false;\n\n}"+
-  "\n\nif(number < 2) {\n\n"+
-          "inLoop = true;\n\n"+
-      "}\n"+
-      "number = number + 1;\n\n"+
-      "numberTwo = numberTwo + 2;\n"+
-  "}\n\n";
-  
-  var text = new PIXI.Text(code,{fontFamily : 'Arial', fontSize: 24, fill : 0x000000, align : 'left'});
-  app.stage.addChild(text);
-<<<<<<< HEAD
-  var init_x = 10;
-=======
-  init_x = 0;
-
-  console.log("THIS IS THE CODE LENGTH: " + code.length);
-
-  console.log("THIS IS THE CODE LENGTH: " + code.length);
-
-  console.log("THIS IS THE CODE LENGTH: " + code.length);
->>>>>>> b95cbaa352246e536210f7bad21491d2b89e9ff5
-
+  var marginX = 20;
   var code_render = [];
+  var lineY = 60;
+  var lineInterval = 51;
+  var deductionBoost = 30;
   for (var i = 0; i < code.length; i++) {
-    if (code[i].includes("}")) {
-      init_x -= 20;
+    code_render.push(new PIXI.Text(" "+ code[i], {fontFamily : 'Consolas', fontSize: 20, fill : 0x000000, align : 'left'}));
+    code_render[i].y = lineY;
+    code_render[i].x = marginX;
+    if (i+1<code.length && code[i+1].includes("}")) {
+      lineY += lineInterval - deductionBoost;
+    } else {
+      lineY += lineInterval;
     }
-    code_render.push(new PIXI.Text(" "+ code[i], {fontFamily : 'Helvetica', fontSize: 20, fill : 0x000000, align : 'left'}));
-    code_render[i].position.y = init_x;
-    init_x += 45;     // edit this to change space between lines...should be const b/c hardcoding oops
     app.stage.addChild(code_render[i]);
   }
   
