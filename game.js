@@ -207,22 +207,6 @@ function dyingState (delta) {
       }
     }
   }
-  // if (pauseTimer >= 0) {
-  //   pauseTimer += delta*.001;
-  // }
-  // if (pauseTimer >= 0 && pauseTimer > pauseDuration) {
-  //   player1.play();
-  //   console.log("timeout");
-  //   pauseTimer = -1;
-  // }
-  // if (pauseTimer == -1) {
-  //   //annimation
-  //   player1.angle += 1;
-  //   if (player1.angle > 90) {
-
-  //   }
-  // }
-
 }
 
 var movingPhase = 0;
@@ -379,18 +363,18 @@ function setup() {
         restText.y = lineY;
         let firstMetric = new PIXI.TextMetrics.measureText(code[i][0], generateStyle(colorMap.get(code[i][0])));
         restText.x = firstWordText.x + firstMetric.width + spaceInterval;
-        text_metrics.push(firstMetric.width + new PIXI.TextMetrics.measureText(" "+code[i][1], codeStyle));
+        text_metrics.push(firstMetric.width + new PIXI.TextMetrics.measureText(" "+code[i][1], codeStyle).width);
         app.stage.addChild(firstWordText);
         app.stage.addChild(restText);
       } else if (i==4 || i==7) {
         var firstWordText1 = new PIXI.Text(tabs4+ code[i][1], generateStyle(colorMap.get(code[i][1])));
         firstWordText1.y = lineY;
         firstWordText1.x = marginX + 7;
+        let firstMetric1 = new PIXI.TextMetrics.measureText(tabs4+code[i][1], generateStyle(colorMap.get(code[i][1])));
         var restText1 = new PIXI.Text(" "+ code[i][2], codeStyle);
         restText1.y = lineY;
-        restText1.x = marginX + new PIXI.TextMetrics.measureText(tabs4+code[i][1], generateStyle(colorMap.get(code[i][1]))).width + spaceInterval;
-        let firstMetric1 = new PIXI.TextMetrics.measureText(tabs4+code[i][1], generateStyle(colorMap.get(code[i][1])));
-        text_metrics.push(firstMetric1.width + new PIXI.TextMetrics.measureText(" "+code[i][2], codeStyle));
+        restText1.x = marginX + firstMetric1.width + spaceInterval;
+        text_metrics.push(firstMetric1.width + new PIXI.TextMetrics.measureText(" "+code[i][2], codeStyle).width + spaceInterval);
         app.stage.addChild(firstWordText1);
         app.stage.addChild(restText1);
       } else {
@@ -414,10 +398,10 @@ function setup() {
   varsTitle.position.x = 780;
   varsTitle.position.y = 115;
   numberText = new PIXI.Text("number: " + number, specialStyle);
-  numberText.position.x = 825;
+  numberText.position.x = 820;
   numberText.position.y = 150;
   numberTwoText = new PIXI.Text("numberTwo: " + numberTwo, specialStyle);
-  numberTwoText.position.x = 815;
+  numberTwoText.position.x = 810;
   numberTwoText.position.y = 175;
   app.stage.addChild(whiteboard);
   app.stage.addChild(varsTitle);
@@ -444,10 +428,10 @@ function setup() {
   state = enterState;
 }
 
-<<<<<<< HEAD
 function generateStyle (color) {
   return new PIXI.TextStyle({fontFamily : 'Consolas', fontSize: 20, fill : color, align : 'left'});
-=======
+}
+
 function intro() {
   startGameContainer = new PIXI.Container();
   let title = new PIXI.Text('press spacebar to begin')
@@ -457,7 +441,6 @@ function intro() {
     app.stage.removeChild(startGameContainer)
     state = play
   }
->>>>>>> 13393b508dfa7f01e1975cbf117c35c295d8403a
 }
 
 function verifyAnswer (correctIndex) {
