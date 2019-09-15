@@ -2,8 +2,9 @@
 var type = "WebGL";
 var appWidth = 512 * 2;
 var appHeight = 512 * 1.25;
-var playerScaleFactor = new PIXI.Point(.06, .06);
+var playerScaleFactor = new PIXI.Point(.08, .043);
 var heartScaleFactor = new PIXI.Point(.35, .35);
+var indicatorScaleFactor = new PIXI.Point(.1, .1);
 var hearts = [];
 var gameCount = 0;
 var lineOptions = [
@@ -30,6 +31,20 @@ var lineOptions = [
   [1, 4, 5, 2],
   [5, 14, 11, 1]
 ];
+var tabs4 = "\t\t\t\t";
+var code = ["boolean inLoop = true;",
+"int number = 0;",
+"int numberTwo = 0;",
+"while(inLoop) {",
+tabs4 + "if(number * numberTwo > 7) {",
+tabs4 + tabs4 + "inLoop = false;",
+tabs4 + "}",
+tabs4 + "if(number < 2) {",
+tabs4 + tabs4 + "inLoop = true;",
+tabs4 + "}",
+tabs4 + "number = number + 1;",
+tabs4 + "numberTwo = numberTwo + 2;",
+"}"];
 var optionIndicatorTracker = [];  // 2d array initialized to false
 var backdrop;
 var startingLives = 3;
@@ -38,6 +53,18 @@ var currLine;
 var app;
 var player1;
 var state;
+var marginX = 25;
+var playerXAdjustment = 5;
+var lineInterval = 51;
+var deductionBoost = 30;
+var tabXAdjustment = 7;
+var indicatorLeftAdjustment = 5;
+var firstLineY;
+player1Indicators = [];
+player2Indicators = [];
+player3Indicators = [];
+player4Indicators = [];
+indicatorNames = ["p1a", "p1b", "p1c", "p2a", "p2b", "p2c", "p3a", "p3b", "p3c", "p4a", "p4b", "p4c"];
 const player1Frames = [ 
   "assets/player1_1.png",
   "assets/player1_2.png",
@@ -95,11 +122,21 @@ function init() {
         .add(player2Frames)
         .add(player3Frames)
         .add(player4Frames)
+        .add("p1a", "assets/player1_a.png")
+        .add("p1b", "assets/player1_b.png")
+        .add("p1c", "assets/player1_c.png")
+        .add("p2a", "assets/player2_a.png")
+        .add("p2b", "assets/player2_b.png")
+        .add("p2c", "assets/player2_c.png")
+        .add("p3a", "assets/player3_a.png")
+        .add("p3b", "assets/player3_b.png")
+        .add("p3c", "assets/player3_c.png")
+        .add("p4a", "assets/player4_a.png")
+        .add("p4b", "assets/player4_b.png")
+        .add("p4c", "assets/player4_c.png")
         .add("heart", "assets/life_symbol.png")
         .add("backdrop", "assets/backdrop.png")
         .load(setup);
-    app.ticker.add(delta => gameLoop(delta))
-    state = enterState;
 }
 
 function gameLoop (delta) {
@@ -112,10 +149,20 @@ function gameLoop (delta) {
 // --- State-Specific Game-Loop Functions ---
 function enterState (delta) {
   //console.log(timeCounter);
-  let complete = moveToward(delta, player1, 600, 200, true, true);
+  let complete = moveToward(delta, player1, marginX + playerXAdjustment, firstLineY, false, true);
   if (complete) {
     console.log("switching to options state");
-    
+    for (var i=0; i<lineOptions[currLine+1]; i++) {
+      let indicatorToLine = lineOptions[currLine+1][i];
+    }
+    player1.scale.x *= -1;
+    player1.stop();
+    for (var i=0; i<player1Indicators.length; i++) {
+      indLoc = computeIndicatorLocation(player1Indicators[i]);
+      player1Indicators[i].x = indLoc.x;
+      player1Indicators[i].y = indLoc.y;
+      console.log(indLoc);
+    }
     state = optionsPresentedState;
   }
 }
@@ -170,9 +217,11 @@ function moveToward (delta, sprite, destX, destY, fromLeft, fromTop) {
 }
 
 function setupPlayer(player){
-  player.position.x = -100;
-  player.position.y = -100;
   player.scale = playerScaleFactor;
+  firstLineY = 55 - player.height;
+  player.position.x = 1100;
+  player.position.y = firstLineY+15;
+  player.scale.x *= -1;
   app.stage.addChild(player);
   player.animationSpeed = .15;
   player.play();
@@ -192,10 +241,32 @@ function setup() {
   console.log("after new sprite has been creater")
   setupPlayer(player1);
 
-  // initialize sound effort 
-  var zap = createAudio('audio/backstreet.mp3',{volume:0.3});
   
 
+  console.log("player " + player1);
+
+  for (var i=0; i<indicatorNames.length; i++) {
+    let nextIndicator = new PIXI.Sprite(PIXI.loader.resources[indicatorNames[i]].texture);
+    nextIndicator.scale = indicatorScaleFactor;
+    nextIndicator.x = -100;
+    nextIndicator.y = -100;
+    if (i/4 == 0) {
+      player1Indicators[i%4] = nextIndicator;
+    }
+    if (i/4 == 1) {
+      player2Indicators[i%4] = nextIndicator;
+    }
+    if (i/4 == 2) {
+      player3Indicators[i%4] = nextIndicator;
+    }
+    if (i/4 == 3) {
+      player4Indicators[i%4] = nextIndicator;
+    }
+    app.stage.addChild(nextIndicator);
+  }
+
+  // initialize sound effort 
+  var zap = createAudio('audio/backstreet.mp3',{volume:0.3});
 
   let heartX = 850;
   let heartY = 30;
@@ -209,33 +280,18 @@ function setup() {
     app.stage.addChild(hearts[i]);
     console.log(hearts[i]);
   }
-  zap.play();
-  // var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
-  var code = "\n\nboolean inLoop = true;\n\n"+
-  "int number = 0;\n\n"+
-  "int numberTwo = 0;\n\n"+
-  "while(inLoop) {\n\n"+
-  "if(number * numberTwo > 7) {\n\n"+
-  "inLoop = false;\n\n}"+
-  "\n\nif(number < 2) {\n\n"+
-          "inLoop = true;\n\n"+
-      "}\n"+
-      "number = number + 1;\n\n"+
-      "numberTwo = numberTwo + 2;\n"+
-  "}\n\n";
-  
-  var text = new PIXI.Text(code,{fontFamily : 'Arial', fontSize: 24, fill : 0x000000, align : 'left'});
-  app.stage.addChild(text);
-  init_x = 0;
 
   var code_render = [];
+  var lineY = 60;
   for (var i = 0; i < code.length; i++) {
-    if (code[i].includes("}")) {
-      init_x -= 20;
+    code_render.push(new PIXI.Text(" "+ code[i], {fontFamily : 'Consolas', fontSize: 20, fill : 0x000000, align : 'left'}));
+    code_render[i].y = lineY;
+    code_render[i].x = marginX;
+    if (i+1<code.length && code[i+1].includes("}")) {
+      lineY += lineInterval - deductionBoost;
+    } else {
+      lineY += lineInterval;
     }
-    code_render.push(new PIXI.Text(" "+ code[i], {fontFamily : 'Helvetica', fontSize: 20, fill : 0x000000, align : 'left'}));
-    code_render[i].position.y = init_x;
-    init_x += 45;     // edit this to change space between lines...should be const b/c hardcoding oops
     app.stage.addChild(code_render[i]);
   }
   
@@ -282,6 +338,49 @@ function setup() {
   state = enterState;
 }
 
+function computeIndicatorLocation (lineNum) {
+  let x = marginX - indicatorLeftAdjustment;
+  if (lineNum >= 5 && lineNum <= 12) {
+    x += tabXAdjustment;
+  }
+  if (lineNum == 6 || lineNum == 9) {
+    x += tabXAdjustment;
+  }
+  console.log("first ly " + firstLineY);
+  let y = firstLineY + lineNum * lineInterval;
+  if (lineNum >= 7) {
+    y -= deductionBoost;
+  }
+  if (lineNum >= 10) {
+    y -= deductionBoost;
+  }
+  if (lineNum >= 13) {
+    y -= deductionBoost;
+  }
+  return new PIXI.Point(x, y);
+}
+
+function computePlayerLocation (lineNum) {
+  let x = marginX + playerXAdjustment;
+  if (lineNum >= 5 && lineNum <= 12) {
+    x += tabXAdjustment;
+  }
+  if (lineNum == 6 || lineNum == 9) {
+    x += tabXAdjustment;
+  }
+  let y = firstLineY + lineNum * lineInterval;
+  if (lineNum >= 7) {
+    y -= deductionBoost;
+  }
+  if (lineNum >= 10) {
+    y -= deductionBoost;
+  }
+  if (lineNum >= 13) {
+    y -= deductionBoost;
+  }
+  return new PIXI.Point(x, y);
+}
+
 function createAudio(src, options) {
   var audio = document.createElement('audio');
   audio.volume = options.volume || 0.5;
@@ -289,17 +388,6 @@ function createAudio(src, options) {
   audio.src    = src;
   return audio;
 }
-
-// function getText(File f) {
-
-// }
-
-// function startGame() {
-//   // var textSample = new PIXI.Sprite();
-//   textSample.position.set(20);
-//   app.stage.addChild(textSample);
-
-// }
 
 // Keyboard Controls
 function keyboard(keyCode) {
