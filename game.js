@@ -190,8 +190,11 @@ function setup() {
   setupPlayer(player1);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   // initialize sound effort 
   var zap = createAudio('audio/backstreet.mp3',{volume:0.3});
+=======
+>>>>>>> parent of 8101039... init audio
 =======
 >>>>>>> parent of 8101039... init audio
   
@@ -209,6 +212,18 @@ function setup() {
     app.stage.addChild(hearts[i]);
     console.log(hearts[i]);
   }
+<<<<<<< HEAD
+=======
+
+  // var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
+  var code = [];
+  code.push("boolean inLoop = true;\n");
+  code.push("int number = 0;\n");
+  code.push("int numberTwo = 0;\n");
+  code.push("while (inLoop) {\n");
+  code.push("\t\t\t\tif (number * numberTwo > 7) {\n");
+  code.push("\t\t\t\t\t\t\t\tinLoop = false;");
+>>>>>>> parent of 8101039... init audio
 
   // var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
   var code = "\n\nboolean inLoop = true;\n\n"+
@@ -227,6 +242,8 @@ function setup() {
   var text = new PIXI.Text(code,{fontFamily : 'Arial', fontSize: 24, fill : 0x000000, align : 'left'});
   app.stage.addChild(text);
   init_x = 0;
+
+  console.log("THIS IS THE CODE LENGTH: " + code.length);
 
   console.log("THIS IS THE CODE LENGTH: " + code.length);
 
