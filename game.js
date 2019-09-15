@@ -2,7 +2,7 @@
 var type = "WebGL";
 var appWidth = 512 * 2;
 var appHeight = 512 * 1.25;
-var playerScaleFactor = new PIXI.Point(.06, .06);
+var playerScaleFactor = new PIXI.Point(.08, .043);
 var heartScaleFactor = new PIXI.Point(.35, .35);
 var indicatorScaleFactor = new PIXI.Point(.1, .1);
 var hearts = [];
@@ -52,6 +52,9 @@ var currLine;
 var app;
 var player1;
 var state;
+var marginX = 25;
+var playerXAdjustment = 5;
+var firstLineY;
 player1Indicators = [];
 player2Indicators = [];
 player3Indicators = [];
@@ -141,13 +144,14 @@ function gameLoop (delta) {
 // --- State-Specific Game-Loop Functions ---
 function enterState (delta) {
   //console.log(timeCounter);
-  let complete = moveToward(delta, player1, 600, 200, true, true);
+  let complete = moveToward(delta, player1, marginX + playerXAdjustment, firstLineY, false, true);
   if (complete) {
     console.log("switching to options state");
     for (var i=0; i<lineOptions[currLine+1]; i++) {
       let indicatorToLine = lineOptions[currLine+1][i];
     }
-    
+    player1.scale.x *= -1;
+    player1.stop();
     state = optionsPresentedState;
   }
 }
@@ -200,9 +204,11 @@ function moveToward (delta, sprite, destX, destY, fromLeft, fromTop) {
 }
 
 function setupPlayer(player){
-  player.position.x = -100;
-  player.position.y = -100;
   player.scale = playerScaleFactor;
+  firstLineY = 55 - player.height;
+  player.position.x = 1100;
+  player.position.y = firstLineY+15;
+  player.scale.x *= -1;
   app.stage.addChild(player);
   player.animationSpeed = .15;
   player.play();
@@ -221,6 +227,8 @@ function setup() {
   // text = new PIXI.Sprite(PIXI.loader.resources['code_text'].texture);
   console.log("after new sprite has been creater")
   setupPlayer(player1);
+
+  
 
   console.log("player " + player1);
 
@@ -260,7 +268,6 @@ function setup() {
     console.log(hearts[i]);
   }
 
-  var marginX = 20;
   var code_render = [];
   var lineY = 60;
   var lineInterval = 51;
