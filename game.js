@@ -126,17 +126,24 @@ function moveToward (delta, sprite, destX, destY, fromLeft, fromTop) {
   return xDone && yDone
 }
 
+function setupPlayer(player){
+  player.position.x = -100;
+  player.position.y = -100;
+  player.scale = playerScaleFactor;
+  app.stage.addChild(player);
+  player.animationSpeed = .15;
+  player.play();
+}
+
 function setup() {
   // Initialize sprites
   player1 = PIXI.extras.AnimatedSprite.fromFrames(player1Frames);
+  player2 = PIXI.extras.AnimatedSprite.fromFrames(player2Frames);
+  player3 = PIXI.extras.AnimatedSprite.fromFrames(player3Frames);
+  player4 = PIXI.extras.AnimatedSprite.fromFrames(player4Frames);
   // text = new PIXI.Sprite(PIXI.loader.resources['code_text'].texture);
   console.log("after new sprite has been creater")
-  player1.position.x = -100;
-  player1.position.y = -100;
-  player1.scale = playerScaleFactor;
-  app.stage.addChild(player1);
-  player1.animationSpeed = .15;
-  player1.play();
+  setupPlayer(player1);
 
   console.log("made it " + player1);
 
