@@ -5,6 +5,33 @@ var appHeight = 512 * 1.25;
 var app;
 var player1;
 var state;
+const player1Frames = [ 
+  "assets/player1_1.png",
+  "assets/player1_2.png",
+  "assets/player1_3.png",
+  "assets/player1_4.png",
+];
+
+const player2Frames = [ 
+  "assets/player2_1.png",
+  "assets/player2_2.png",
+  "assets/player2_3.png",
+  "assets/player2_4.png",
+];
+
+const player3Frames = [ 
+  "assets/player3_1.png",
+  "assets/player3_2.png",
+  "assets/player3_3.png",
+  "assets/player3_4.png",
+];
+
+const player4Frames = [ 
+  "assets/player4_1.png",
+  "assets/player4_2.png",
+  "assets/player4_3.png",
+  "assets/player4_4.png",
+];
 
 // Initialization Function (begin on menu screen)
 function init() {
@@ -18,18 +45,20 @@ function init() {
     // add created canvas to the html
     document.body.appendChild(app.view);
     // Load Images
+    
     PIXI.loader
-    .add('testing', "assets/temp_stick_figure.png")
-    .add('code_test', "level1.txt")
-    .load(setup);
+        .add('code_test', "level1.txt")
+        .add(player1Frames)
+        .add(player2Frames)
+        .add(player3Frames)
+        .add(player4Frames)
+        .load(setup);
     app.ticker.add(delta => gameLoop(delta))
     state = enterState;
 }
 
 function gameLoop (delta) {
-<<<<<<< HEAD
   requestAnimationFrame(gameLoop);
-  console.log("woooo");
   state(delta);
 }
 
@@ -52,24 +81,21 @@ function movingState (delta) {
 
 function exitState (delta) {
 
-=======
-  // not used rn what the fuck why is this here  
-  //console.log("woooo");
-}
 
-function update() {
-  // not used right now
->>>>>>> 8b552dec82bcad42ad45606397422822006d4e08
 }
 
 function setup() {
   // Initialize sprites
-  player1 = new PIXI.Sprite(PIXI.loader.resources['testing'].texture);
+  player1 = PIXI.extras.AnimatedSprite.fromFrames(player1Frames);
   // text = new PIXI.Sprite(PIXI.loader.resources['code_text'].texture);
   console.log("after new sprite has been creater")
+  player1.scale.y = .375
+  player1.scale.x = .375
   player1.position.x = 100;
   player1.position.y = 100;
   app.stage.addChild(player1);
+  player1.animationSpeed = .15;
+  player1.play();
 
   const fileURL = 'level1.txt';
 
@@ -135,8 +161,4 @@ function keyboard(keyCode) {
       "keyup", key.upHandler.bind(key), false
     );
     return key;
-<<<<<<< HEAD
   }
-=======
-  }
->>>>>>> 8b552dec82bcad42ad45606397422822006d4e08
