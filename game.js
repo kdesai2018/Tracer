@@ -208,7 +208,6 @@ function setup() {
   console.log("after new sprite has been creater")
   setupPlayer(player1);
 
-<<<<<<< HEAD
   console.log("player " + player1);
 
   for (var i=0; i<indicatorNames.length; i++) {
@@ -231,23 +230,8 @@ function setup() {
     app.stage.addChild(nextIndicator);
   }
 
-
-
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> b95cbaa352246e536210f7bad21491d2b89e9ff5
   // initialize sound effort 
   var zap = createAudio('audio/backstreet.mp3',{volume:0.3});
-=======
->>>>>>> parent of 8101039... init audio
-=======
->>>>>>> parent of 8101039... init audio
-=======
->>>>>>> parent of 8101039... init audio
-  
-
 
   let heartX = 850;
   let heartY = 30;
@@ -261,11 +245,7 @@ function setup() {
     app.stage.addChild(hearts[i]);
     console.log(hearts[i]);
   }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> parent of 8101039... init audio
+  zap.play();
 
   // var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
   var code = [];
@@ -275,7 +255,6 @@ function setup() {
   code.push("while (inLoop) {\n");
   code.push("\t\t\t\tif (number * numberTwo > 7) {\n");
   code.push("\t\t\t\t\t\t\t\tinLoop = false;");
->>>>>>> parent of 8101039... init audio
 
   // var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
   var code = "\n\nboolean inLoop = true;\n\n"+
@@ -293,18 +272,7 @@ function setup() {
   
   var text = new PIXI.Text(code,{fontFamily : 'Arial', fontSize: 24, fill : 0x000000, align : 'left'});
   app.stage.addChild(text);
-<<<<<<< HEAD
   var init_x = 10;
-=======
-  init_x = 0;
-
-  console.log("THIS IS THE CODE LENGTH: " + code.length);
-
-  console.log("THIS IS THE CODE LENGTH: " + code.length);
-
-  console.log("THIS IS THE CODE LENGTH: " + code.length);
->>>>>>> b95cbaa352246e536210f7bad21491d2b89e9ff5
-
   var code_render = [];
   for (var i = 0; i < code.length; i++) {
     if (code[i].includes("}")) {
@@ -321,16 +289,13 @@ function setup() {
   state = enterState;
 }
 
-// function getText(File f) {
-
-// }
-
-// function startGame() {
-//   // var textSample = new PIXI.Sprite();
-//   textSample.position.set(20);
-//   app.stage.addChild(textSample);
-
-// }
+function createAudio(src, options) {
+  var audio = document.createElement('audio');
+  audio.volume = options.volume || 0.5;
+  audio.loop   = options.loop;
+  audio.src    = src;
+  return audio;
+}
 
 // Keyboard Controls
 function keyboard(keyCode) {
