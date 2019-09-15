@@ -70,6 +70,9 @@ var firstLineY;
 var finalGameCount = 22;
 var whiteboard;
 var varsTitle;
+var youLose;
+var youWin;
+
 player1Indicators = [];
 player2Indicators = [];
 player3Indicators = [];
@@ -229,7 +232,8 @@ function dyingState (delta) {
     if (livesCount == 0) {
       console.log("you died");
       player1.stop();
-
+      youLose.position.x = 175;
+      youLose.position.y = 200;
     } else {
       state = optionsPresentedState;
     }
@@ -256,6 +260,8 @@ function movingState (delta) {
       }
       if (gameCount == finalGameCount) {
         state = exitState;
+        youWin.position.x = 90;
+        youWin.position.y = 250;
       } else {
         player1.stop();
         for (var i=0; i<3; i++) {
@@ -309,7 +315,6 @@ function setupPlayer(player){
   player.position.x = 1100;
   player.position.y = firstLineY+15;
   player.scale.x *= -1;
-  app.stage.addChild(player);
   player.animationSpeed = .15;
   player.play();
 }
@@ -436,6 +441,7 @@ function setup() {
       lineY += lineInterval;
     }
   }
+  app.stage.addChild(player1);
   // VARIABLES BOARD
   whiteboard = new PIXI.Sprite(PIXI.loader.resources["whiteboard"].texture);
   whiteboard.scale = new PIXI.Point(.225, .35);
@@ -474,6 +480,13 @@ function setup() {
   cKey.press = () => {
     verifyAnswer(2);
   };
+
+  youLose = new PIXI.Text("GAME OVER", {fontFamily : 'Consolas', fontSize: 135, fill : 0x000000, align : 'center'});
+  youLose.position.x = -3000;
+  youLose.position.y = -3000;
+  youWin = new PIXI.Text("LEVEL COMPLETE", {fontFamily : 'Consolas', fontSize: 115, fill : 0x000000, align : 'center'})
+  youWin.position.x = -3000;
+  youWin.position.y = -3000;
 
   menuTitle = new PIXI.Text('press spacebar to begin')
   menuTitle.position.x = 375;
@@ -515,6 +528,8 @@ function setup() {
   app.stage.addChild(p3);
   app.stage.addChild(p4);
   app.stage.addChild(menuTitle);
+  app.stage.addChild(youLose);
+  app.stage.addChild(youWin);
   state = menu;
 }
 
