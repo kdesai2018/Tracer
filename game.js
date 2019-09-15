@@ -151,6 +151,8 @@ function setup() {
   console.log("after new sprite has been creater")
   setupPlayer(player1);
 
+  // initialize sound effort 
+  var zap = createAudio('audio/backstreet.mp3',{volume:1.0});
   
 
 
@@ -166,7 +168,7 @@ function setup() {
     app.stage.addChild(hearts[i]);
     console.log(hearts[i]);
   }
-
+  zap.play();
   // var code = "int a = 1; \n\n int b = 6; \n\n while (b > 0) {\n\na = a + 1;\n\nb = b - 1;\n\n}\n\nSystem.out.println(\"Finshed\");";
   var code = [];
   code.push("boolean inLoop = true;\n");
@@ -188,8 +190,6 @@ function setup() {
 
   var init_x = 10;
 
-  console.log("THIS IS THE CODE LENGTH: " + code.length);
-
   var code_render = [];
   for (var i = 0; i < code.length; i++) {
     if (code[i].includes("}")) {
@@ -205,6 +205,14 @@ function setup() {
   console.log("START NOW");
   app.ticker.add(delta => gameLoop(delta))
   state = enterState;
+}
+
+function createAudio(src, options) {
+  var audio = document.createElement('audio');
+  audio.volume = options.volume || 0.5;
+  audio.loop   = options.loop;
+  audio.src    = src;
+  return audio;
 }
 
 // function getText(File f) {
